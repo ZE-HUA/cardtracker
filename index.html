@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title> Card Tracker</title>
+<title>Card Price Tracker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -97,11 +97,28 @@ header h1{font-size:17px;font-weight:700}
 /* CARDS */
 .card-list{padding:0 12px;display:flex;flex-direction:column;gap:12px}
 .card-item{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden;position:relative}
-.card-top{display:flex;gap:12px;padding:12px 36px 12px 12px}
-.card-img-box{flex-shrink:0;width:72px;height:72px;border-radius:10px;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-img-box img{width:100%;height:100%;object-fit:contain}
-.card-meta{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
-.card-name{font-size:13px;font-weight:500;line-height:1.35}
+.card-top{display:flex;gap:14px;padding:12px 36px 12px 12px;align-items:flex-start}
+.card-img-box{flex-shrink:0;width:132px;height:132px;border-radius:14px;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center}
+/* 圖片框本身加大，並用較高 scale 盡量裁掉 SNKRDUNK 原圖白邊，讓卡片主體更清楚 */
+.card-img-box img{width:100%;height:100%;object-fit:contain;transform:scale(1.5);transform-origin:center}
+.card-meta{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start}
+.card-name{font-size:14px;font-weight:600;line-height:1.35}
+.card-name-link{color:var(--text);text-decoration:none}
+.card-name-link:active{opacity:.55}
+.card-name-link:visited{color:var(--text)}
+.card-metrics{margin-top:8px;background:var(--bg);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.metric-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.metric-lbl{font-size:10px;color:var(--t2);font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.metric-val{font-size:14px;font-weight:700;text-align:right}
+@media(max-width:390px){
+  .card-img-box{width:120px;height:120px}
+  .card-img-box img{transform:scale(1.9)}
+  .card-name{font-size:13px}
+  .card-top{gap:12px}
+  .card-metrics{padding:7px 8px}
+  .metric-val{font-size:13px}
+}
+
 .card-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
 .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
 .b-psa{background:var(--acc-bg);color:var(--acc-t)}
@@ -129,7 +146,7 @@ header h1{font-size:17px;font-weight:700}
 .no-data{font-size:12px;color:var(--t3);padding:4px 0 10px}
 .fallback-note{font-size:10px;color:var(--t3);padding:2px 0 8px;font-style:italic}
 
-.chart-wrap{position:relative;height:88px}
+.chart-wrap{position:relative;height:150px;padding:4px 2px 0}
 .refresh-stamp{font-size:10px;color:var(--t3);padding:6px 14px 8px}
 
 /* EMPTY */
@@ -161,8 +178,8 @@ header h1{font-size:17px;font-weight:700}
 .f-input:focus{border-color:var(--acc)}
 
 /* 商品預覽 */
-.preview-card{display:flex;gap:12px;align-items:center;padding:12px;background:var(--bg);border-radius:12px;margin-bottom:20px;border:.5px solid var(--border)}
-.preview-img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--card)}
+.preview-card{display:flex;gap:14px;align-items:center;padding:12px;background:var(--bg);border-radius:12px;margin-bottom:20px;border:.5px solid var(--border)}
+.preview-img{width:96px;height:96px;object-fit:contain;border-radius:10px;background:var(--card);transform:scale(1.65);transform-origin:center}
 .preview-name{font-size:13px;font-weight:600;line-height:1.35}
 .preview-sub{font-size:11px;color:var(--t2);margin-top:3px}
 
@@ -192,7 +209,7 @@ header h1{font-size:17px;font-weight:700}
 <body>
 
 <header>
-  <h1> Card Tracker</h1>
+  <h1>📊 Card Price Tracker</h1>
   <div class="hdr-btns">
     <button class="icon-btn" id="refreshBtn" onclick="refreshAll()" title="全部更新">
       <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
@@ -255,8 +272,8 @@ header h1{font-size:17px;font-weight:700}
           <div class="cond-grid" id="condGrid"></div>
         </div>
         <div class="f-group">
-          <label class="f-lbl">收購成本 (¥)</label>
-          <input class="f-input" id="costInput" type="number" inputmode="numeric" placeholder="例：45000">
+          <label class="f-lbl">收購成本 (NT$)</label>
+          <input class="f-input" id="costInput" type="number" inputmode="numeric" placeholder="例：9500">
         </div>
         <div class="err-msg" id="detailErr"></div>
         <button class="btn-main" onclick="confirmAdd()">新增到收藏</button>
@@ -290,8 +307,8 @@ header h1{font-size:17px;font-weight:700}
       </div>
 
       <div class="set-section">
-        <div class="set-section-title">新台幣匯率（1 JPY = ? TWD）</div>
-        <div class="set-hint">用於將日幣標價同步換算為新台幣。建議定期更新。</div>
+        <div class="set-section-title">日幣換算匯率（1 JPY = ? TWD）</div>
+        <div class="set-hint">SNKRDUNK 市價來源仍是日幣，系統會用此匯率全部換算成新台幣顯示與計算。</div>
         <div class="set-url-row">
           <input class="f-input" id="twdRateInput" type="number" inputmode="decimal" step="0.001" placeholder="例：0.215" style="font-size:15px;padding:11px 12px">
           <button class="btn-sub btn-save" onclick="saveTwdRate()">儲存</button>
@@ -354,6 +371,19 @@ const STORE = 'snkr_tracker_v5';
 ═══════════════════════════════════════ */
 let db = JSON.parse(localStorage.getItem(STORE) || '[]');
 function save(){ localStorage.setItem(STORE, JSON.stringify(db)) }
+
+function migrateCostToTwd(){
+  let changed = false;
+  db = db.map(c => {
+    // 舊版資料：cost 代表日幣。新版改用 costTwd 代表台幣。
+    if((c.costTwd === undefined || c.costTwd === null) && c.cost){
+      changed = true;
+      return { ...c, legacyCostJPY: c.cost, costTwd: toTWD(Number(c.cost)), costCurrency: 'TWD' };
+    }
+    return c;
+  });
+  if(changed) save();
+}
 
 /* ═══════════════════════════════════════
    API 層
@@ -432,7 +462,13 @@ async function checkProxy(){
 const TWD_KEY  = 'snkr_twd_rate';
 function getTwdRate(){ return parseFloat(localStorage.getItem(TWD_KEY)) || 0.215; }
 function toTWD(yen){ return yen ? Math.round(yen * getTwdRate()) : null; }
-const fmtTWD = n => n ? 'NT$'+Number(n).toLocaleString() : '';
+const fmtTWD = n => (n || n===0) ? 'NT$'+Number(n).toLocaleString() : '–';
+const getCostTwd = c => {
+  if(c.costTwd || c.costTwd===0) return Number(c.costTwd);
+  // 舊版資料的 cost 原本是日幣，第一次載入時會換算成台幣
+  if(c.cost) return toTWD(Number(c.cost));
+  return 0;
+};
 
 function saveTwdRate(){
   const v = parseFloat(document.getElementById('twdRateInput').value);
@@ -479,13 +515,15 @@ function clearServerUrl(){
    取得商品完整資料
 ═══════════════════════════════════════ */
 async function fetchCardData(id, condition){
-  const condId = {PSA10:22,PSA9:23,'PSA8以下':24,'BGS10 BL':25,'BGS10 GL':26,'BGS9.5':27,'BGS9.5以下':28,'ARS10+':29,'ARS10':30,'ARS9':31,'ARS8以下':32,'他鑑定品':33,A:18,B:19,C:20,D:21}[condition] ?? -1;
+  /* 估值固定使用 PSA10 最新成交價，不再使用PSA10最新成交價 */
+  const PSA10_CONDITION = 'PSA10';
+  const PSA10_CHART_ID  = 22;
 
   const [infoR, usedR, histR, chartR] = await Promise.allSettled([
     apiFetch(`/v1/apparels/${id}`),
     apiFetch(`/v1/apparels/${id}/used?perPage=50&page=1&sizeId=0&isSaleOnly=false`),
     apiFetch(`/v1/apparels/${id}/sales-history?size_id=0&page=1&per_page=20`),
-    apiFetch(`/v1/apparels/${id}/sales-chart/used?range=oneMonth&salesChartOptionId=${condId}`),
+    apiFetch(`/v1/apparels/${id}/sales-chart/used?range=oneMonth&salesChartOptionId=${PSA10_CHART_ID}`),
   ]);
 
   const info  = infoR.status  === 'fulfilled' ? infoR.value  : null;
@@ -493,9 +531,8 @@ async function fetchCardData(id, condition){
   const hist  = histR.status  === 'fulfilled' ? histR.value  : null;
   const chart = chartR.status === 'fulfilled' ? chartR.value : null;
 
-  /* 最低出品價：從在售清單依 displayShortConditionTitle 取最低價 */
-  let currentPrice = null;
-  const condMinMap = {};   /* condition → 最低在售價（供新增時條件選擇器標記用） */
+  /* 保留在售清單標記：新增商品時仍可提示哪些狀態有出品 */
+  const condMinMap = {};
   if(used?.apparelUsedItems){
     for(const it of used.apparelUsedItems){
       const c = it.displayShortConditionTitle || '';
@@ -504,18 +541,15 @@ async function fetchCardData(id, condition){
         if(!(c in condMinMap) || p < condMinMap[c]) condMinMap[c] = p;
       }
     }
-    if(condition in condMinMap) currentPrice = condMinMap[condition];
   }
 
-  /* 近期成交 */
+  /* PSA10 最新成交價：用於單卡市值與總市值 */
+  let currentPrice = null;
   let trades = [], tradesFallback = false;
   if(hist?.history?.length){
-    trades = hist.history.filter(h => h.condition === condition).slice(0,3);
-    if(!trades.length){ trades = hist.history.slice(0,3); tradesFallback = true; }
-    /* fallback 現價：最近 5 筆同狀態成交均價 */
-    if(!currentPrice){
-      const cs = hist.history.filter(h=>h.condition===condition).slice(0,5);
-      if(cs.length) currentPrice = Math.round(cs.reduce((s,h)=>s+h.price,0)/cs.length);
+    trades = hist.history.filter(h => h.condition === PSA10_CONDITION).slice(0,5);
+    if(trades.length){
+      currentPrice = trades[0].price;
     }
   }
 
@@ -524,7 +558,9 @@ async function fetchCardData(id, condition){
     nameEn:     info?.nameEn ?? info?.name_en ?? info?.englishName ?? '',
     imageUrl:   info?.primaryMedia?.imageUrl ?? '',
     currentPrice,
-    condMinMap,   /* 給條件選擇器用：標記哪些狀態有在售 */
+    valueCondition: PSA10_CONDITION,
+    valueSource: 'latest_sale',
+    condMinMap,
     trades, tradesFallback,
     chartPoints: chart?.points ?? [],
     refreshedAt: Date.now(),
@@ -621,7 +657,7 @@ function pickCond(c, el){
 }
 
 async function confirmAdd(){
-  const cost  = parseInt(document.getElementById('costInput').value) || 0;
+  const costTwd  = parseInt(document.getElementById('costInput').value) || 0;
   const errEl = document.getElementById('detailErr');
   const btn   = document.querySelector('#stepDetail .btn-main');
   btn.innerHTML = '<span class="bspin"></span>載入中...'; btn.disabled = true;
@@ -631,10 +667,10 @@ async function confirmAdd(){
     const data = await fetchCardData(_addId, _selCond);
     const idx  = db.findIndex(c=>c.id===_addId && c.condition===_selCond);
     if(idx >= 0){
-      db[idx] = { ...db[idx], ...data, cost: cost || db[idx].cost };
+      db[idx] = { ...db[idx], ...data, costTwd: costTwd || getCostTwd(db[idx]), costCurrency: 'TWD' };
       toast('已更新收藏資料 ✓');
     } else {
-      db.push({ id:_addId, condition:_selCond, cost, ...data });
+      db.push({ id:_addId, condition:_selCond, costTwd, costCurrency:'TWD', ...data });
       toast('已新增到收藏 ✓');
     }
     save(); closeAdd(); renderAll();
@@ -688,7 +724,7 @@ function renderAll(){
   updateSummary();
 }
 
-const fmt  = n => n ? '¥'+Number(n).toLocaleString() : '–';
+const fmtJPY = n => n ? '¥'+Number(n).toLocaleString() : '–';
 const pOf  = (c,t) => (c-t)/t*100;
 const pStr = p => (p>=0?'+':'')+p.toFixed(1)+'%';
 const pCls = p => p>0?'pos':p<0?'neg':'neu';
@@ -703,15 +739,17 @@ function tsAgo(ts){
 }
 
 function cardHTML(c, i){
-  const hasPnl = c.currentPrice && c.cost;
-  const p = hasPnl ? pOf(c.currentPrice, c.cost) : null;
+  const costTwd = getCostTwd(c);
+  const valueTwd = toTWD(c.currentPrice);
+  const hasPnl = valueTwd && costTwd;
+  const p = hasPnl ? pOf(valueTwd, costTwd) : null;
   let tradesHTML = c.trades?.length
     ? c.trades.map(t=>`
         <div class="trade-row">
           <span class="trade-time">${t.date}</span>
           <span class="trade-cond badge ${bCls(t.condition)}">${t.condition}</span>
-          <span class="trade-price">${fmt(t.price)}</span>
-        </div>`).join('') + (c.tradesFallback?`<div class="fallback-note">※ 此狀態無記錄，顯示全狀態</div>`:'')
+          <span class="trade-price">${fmtTWD(toTWD(t.price))}</span>
+        </div>`).join('') + (c.tradesFallback?`<div class="fallback-note">※ 無 PSA10 成交記錄</div>`:'')
     : `<div class="no-data">無成交記錄</div>`;
 
   return `
@@ -722,33 +760,31 @@ function cardHTML(c, i){
       ${c.imageUrl?`<img src="${c.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:28px>🃏</span>'">`:'<span style="font-size:28px">🃏</span>'}
     </div>
     <div class="card-meta">
-      <div class="card-name">${c.name}</div>
+      <div class="card-name"><a class="card-name-link" href="https://snkrdunk.com/apparels/${c.id}" target="_blank" rel="noopener noreferrer">${c.name}</a></div>
       ${c.nameEn && c.nameEn !== c.name ? `<div class="card-name-en">${c.nameEn}</div>` : ''}
+      <div class="card-metrics">
+        <div class="metric-row">
+          <span class="metric-lbl">收購成本</span>
+          <span class="metric-val">${fmtTWD(costTwd)}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-lbl">PSA10最新成交</span>
+          <span class="metric-val ${hasPnl?pCls(valueTwd-costTwd):''}">${fmtTWD(valueTwd)}</span>
+        </div>
+      </div>
       <div class="card-row">
         <span class="badge ${bCls(c.condition)}">${c.condition}</span>
         <span class="card-pnl ${p!==null?pCls(p):'neu'}">${p!==null?pStr(p):'–'}</span>
       </div>
     </div>
   </div>
-  <div class="price-row">
-    <div class="price-cell">
-      <div class="p-lbl">收購成本</div>
-      <div class="p-val">${fmt(c.cost)}</div>
-      ${toTWD(c.cost)?`<div class="p-twd">${fmtTWD(toTWD(c.cost))}</div>`:''}
-    </div>
-    <div class="price-cell">
-      <div class="p-lbl">最低出售價</div>
-      <div class="p-val ${hasPnl?pCls(c.currentPrice-c.cost):''}">${fmt(c.currentPrice)}</div>
-      ${toTWD(c.currentPrice)?`<div class="p-twd">${fmtTWD(toTWD(c.currentPrice))}</div>`:''}
-    </div>
-  </div>
   <div class="sec-wrap">
-    <div class="sec-hd">近期成交（${c.condition}）</div>
+    <div class="sec-hd">近期成交（PSA10）</div>
     ${tradesHTML}
   </div>
   ${c.chartPoints?.length?`
   <div class="sec-wrap">
-    <div class="sec-hd">一個月走勢</div>
+    <div class="sec-hd">PSA10 一個月走勢</div>
     <div class="chart-wrap"><canvas id="ch_${i}" role="img" aria-label="價格走勢"></canvas></div>
   </div>`:''}
   <div class="refresh-stamp">更新於 ${tsAgo(c.refreshedAt)}</div>
@@ -765,27 +801,71 @@ function initChart(i){
     data:{
       labels: c.chartPoints.map(([ts])=>{ const d=new Date(ts); return (d.getMonth()+1)+'/'+(d.getDate()) }),
       datasets:[{
-        data: c.chartPoints.map(([,v])=>v),
+        data: c.chartPoints.map(([,v])=>toTWD(v)),
         borderColor:'#534AB7',
         backgroundColor: dark?'rgba(83,74,183,.12)':'rgba(83,74,183,.07)',
-        fill:true,tension:.35,pointRadius:0,borderWidth:1.5
+        fill:false,tension:0,pointRadius:0,borderWidth:1.5
       }]
     },
     options:{
-      responsive:true,maintainAspectRatio:false,animation:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'¥'+ctx.parsed.y.toLocaleString()}}},
-      scales:{x:{display:false},y:{display:false,grace:'10%'}}
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:false,
+      layout:{padding:{top:4,right:6,bottom:0,left:0}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:ctx=>fmtTWD(ctx.parsed.y)
+          }
+        }
+      },
+      scales:{
+        x:{
+          display:true,
+          ticks:{
+            color:dark?'#8E8E93':'#8E8E93',
+            font:{size:10},
+            maxRotation:0,
+            autoSkip:true,
+            maxTicksLimit:5
+          },
+          grid:{
+            display:false,
+            drawBorder:false
+          }
+        },
+        y:{
+          display:true,
+          grace:'10%',
+          ticks:{
+            color:dark?'#8E8E93':'#8E8E93',
+            font:{size:10},
+            maxTicksLimit:4,
+            callback:value=>'NT$'+Number(value).toLocaleString()
+          },
+          grid:{
+            color:dark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)',
+            drawBorder:false
+          }
+        }
+      }
     }
   });
 }
 
 function updateSummary(){
   let cost=0,val=0,hasVal=false;
-  db.forEach(c=>{ if(c.cost) cost+=Number(c.cost); if(c.currentPrice){val+=c.currentPrice;hasVal=true} });
+  db.forEach(c=>{
+    const ct = getCostTwd(c);
+    const vt = toTWD(c.currentPrice);
+    if(ct) cost += ct;
+    if(vt){ val += vt; hasVal = true; }
+  });
   const sc = document.getElementById('sumCost');
-  sc.innerHTML = cost ? fmt(cost)+(toTWD(cost)?`<div class="sum-twd">${fmtTWD(toTWD(cost))}</div>`:'') : '–';
+  sc.innerHTML = cost ? fmtTWD(cost) : '–';
   const sv = document.getElementById('sumValue');
-  sv.innerHTML = hasVal ? fmt(val)+(toTWD(val)?`<div class="sum-twd">${fmtTWD(toTWD(val))}</div>`:'') : '–';
+  sv.innerHTML = hasVal ? fmtTWD(val) : '–';
   const el = document.getElementById('sumPnl');
   if(cost&&hasVal){ const p=pOf(val,cost); el.textContent=pStr(p); el.className='sum-val '+pCls(p); }
   else { el.textContent='–'; el.className='sum-val neu'; }
@@ -812,6 +892,7 @@ function toast(msg,ms=2400){
 /* header 與 body 的上方距離已改由 CSS safe-area 變數控制，
    避免 JS 動態覆蓋 padding-top 造成 iPhone PWA 狀態列重疊。 */
 
+migrateCostToTwd();
 checkProxy();
 renderAll();
 </script>
