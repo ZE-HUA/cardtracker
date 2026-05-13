@@ -106,6 +106,7 @@ header h1{font-size:17px;font-weight:700}
 .card-name-link{color:var(--text);text-decoration:none}
 .card-name-link:active{opacity:.55}
 .card-name-link:visited{color:var(--text)}
+.card-title-badge{display:inline-flex;align-items:center;margin-left:6px;vertical-align:2px;font-size:10px;font-weight:800;line-height:1;padding:3px 7px;border-radius:6px;background:var(--acc-bg);color:var(--acc-t);white-space:nowrap}
 .card-metrics{margin-top:8px;background:var(--bg);border-radius:10px;padding:8px 9px;display:grid;grid-template-columns:minmax(0,1fr) max-content;row-gap:6px;column-gap:8px;width:100%;max-width:100%;min-width:0;overflow:hidden}
 .metric-row{display:contents}
 .metric-lbl{font-size:10px;color:var(--t2);font-weight:700;letter-spacing:.3px;white-space:nowrap;align-self:baseline;min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -115,8 +116,26 @@ header h1{font-size:17px;font-weight:700}
   .card-img-box img{transform:scale(1.9)}
   .card-name{font-size:13px}
   .card-top{gap:12px}
-  .card-metrics{padding:10px 12px;grid-template-columns:max-content minmax(0,1fr);;column-gap:10px;width:calc(100% + 50px);max-width:none;margin-left:-25px}
-  .metric-val{font-size:13px;min-width:108px}
+
+  /* 手機窄版：加寬黑色資訊框，並讓左側「收購成本(PSA10)」保留完整寬度 */
+  .card-metrics{
+    padding:9px 10px;
+    grid-template-columns:max-content minmax(0,1fr);
+    column-gap:10px;
+    width:calc(100% + 54px);
+    max-width:none;
+    margin-left:-27px;
+  }
+
+  .metric-lbl{
+    overflow:visible;
+    text-overflow:clip;
+  }
+
+  .metric-val{
+    font-size:12.5px;
+    min-width:0;
+  }
 }
 
 .card-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
@@ -755,11 +774,11 @@ function cardHTML(c, i){
       ${c.imageUrl?`<img src="${c.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:28px>🃏</span>'">`:'<span style="font-size:28px">🃏</span>'}
     </div>
     <div class="card-meta">
-      <div class="card-name"><a class="card-name-link" href="https://snkrdunk.com/apparels/${c.id}" target="_blank" rel="noopener noreferrer">${c.name}</a></div>
+      <div class="card-name"><a class="card-name-link" href="https://snkrdunk.com/apparels/${c.id}" target="_blank" rel="noopener noreferrer">${c.name}</a><span class="card-title-badge">${c.condition}</span></div>
       ${c.nameEn && c.nameEn !== c.name ? `<div class="card-name-en">${c.nameEn}</div>` : ''}
       <div class="card-metrics">
         <div class="metric-row">
-          <span class="metric-lbl">收購成本(${c.condition})</span>
+          <span class="metric-lbl">收購成本</span>
           <span class="metric-val">${fmtTWD(costTwd)}</span>
         </div>
         <div class="metric-row">
