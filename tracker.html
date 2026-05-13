@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>市價追蹤器</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F2F1F6;--card:#fff;--text:#1C1C1E;--t2:#8E8E93;--t3:#C7C7CC;
+  --border:rgba(0,0,0,.1);
+  --acc:#534AB7;--acc-bg:#EEEDFE;--acc-t:#3C3489;
+  --green:#1D9E75;--green-bg:#E1F5EE;
+  --red:#D85A30;--red-bg:#FAECE7;
+  --blue:#185FA5;--blue-bg:#E6F1FB;
+  --r:12px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#000;--card:#1C1C1E;--text:#F2F2F7;--t2:#8E8E93;--t3:#48484A;
+  --border:rgba(255,255,255,.1);
+  --acc:#7F77DD;--acc-bg:#26215C;--acc-t:#AFA9EC;
+  --green:#5DCAA5;--green-bg:#04342C;
+  --red:#F09595;--red-bg:#501313;
+  --blue:#378ADD;--blue-bg:#042C53;
+}}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang TC',sans-serif}
+body{padding-top:80px;padding-bottom:calc(var(--sb)+88px)}
+
+header{position:fixed;top:0;left:0;right:0;z-index:90;padding:calc(var(--st)+10px) 16px 10px;
+  background:rgba(242,241,246,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+@media(prefers-color-scheme:dark){header{background:rgba(0,0,0,.9)}}
+header h1{font-size:17px;font-weight:700}
+.hdr-btns{display:flex;gap:2px;align-items:center}
+.icon-btn{background:none;border:none;color:var(--acc);cursor:pointer;padding:6px;border-radius:8px;display:flex;align-items:center;transition:opacity .15s}
+.icon-btn:active{opacity:.4}
+.icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning svg{animation:spin .8s linear infinite}
+
+/* 設定 sheet 專用 */
+.set-section{margin-bottom:22px}
+.set-section-title{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.set-hint{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:10px}
+.set-url-row{display:flex;gap:8px;align-items:flex-start}
+.set-url-row .f-input{flex:1;font-size:14px;padding:11px 12px}
+.btn-sub{padding:11px 14px;background:var(--bg);color:var(--t2);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.btn-sub:active{opacity:.5}
+.btn-save{background:var(--acc);color:#fff;border-color:var(--acc)}
+.set-status{font-size:12px;margin-top:8px;min-height:16px;color:var(--green)}
+.set-status.err{color:var(--red)}
+.how-box{background:var(--bg);border-radius:12px;padding:14px;border:.5px solid var(--border);margin-bottom:10px}
+.how-box-title{font-size:13px;font-weight:700;margin-bottom:6px}
+.how-box-body{font-size:12px;color:var(--t2);line-height:1.75}
+.how-box-body code{background:var(--card);padding:2px 6px;border-radius:5px;font-family:monospace;font-size:11px;color:var(--text);border:.5px solid var(--border)}
+.how-box-body b{color:var(--text);font-weight:600}
+.server-mode{font-size:11px;color:var(--t2);padding:0 16px 6px}
+
+/* 連線狀態 banner */
+.conn-banner{margin:12px 12px 0;padding:10px 14px;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:8px}
+.conn-banner.ok{background:var(--green-bg);color:var(--green)}
+.conn-banner.err{background:var(--red-bg);color:var(--red)}
+.conn-banner.checking{background:var(--acc-bg);color:var(--acc-t)}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* SUMMARY */
+.summary{margin:10px 12px 8px;background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.sum-cell{padding:14px 6px;text-align:center;position:relative}
+.sum-cell+.sum-cell::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:.5px;background:var(--border)}
+.sum-lbl{font-size:10px;color:var(--t2);margin-bottom:5px;font-weight:600;letter-spacing:.3px}
+.sum-val{font-size:17px;font-weight:700;letter-spacing:-.5px}
+.pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--t2)}
+
+/* CARDS */
+.card-list{padding:0 12px;display:flex;flex-direction:column;gap:12px}
+.card-item{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden;position:relative}
+.card-top{display:flex;gap:12px;padding:12px 36px 12px 12px}
+.card-img-box{flex-shrink:0;width:72px;height:72px;border-radius:10px;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-img-box img{width:100%;height:100%;object-fit:contain}
+.card-meta{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
+.card-name{font-size:13px;font-weight:500;line-height:1.35}
+.card-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
+.b-psa{background:var(--acc-bg);color:var(--acc-t)}
+.b-grade{background:var(--blue-bg);color:var(--blue)}
+.card-pnl{font-size:15px;font-weight:700}
+.del-btn{position:absolute;top:10px;right:10px;background:var(--bg);border:none;border-radius:50%;width:26px;height:26px;font-size:13px;cursor:pointer;color:var(--t2);display:flex;align-items:center;justify-content:center}
+.del-btn:active{opacity:.5}
+
+.price-row{display:grid;grid-template-columns:1fr 1fr;border-top:.5px solid var(--border)}
+.price-cell{padding:10px 14px;position:relative}
+.price-cell+.price-cell::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:.5px;background:var(--border)}
+.p-lbl{font-size:10px;color:var(--t2);margin-bottom:3px;font-weight:600;letter-spacing:.3px}
+.p-val{font-size:16px;font-weight:700}
+.p-twd{font-size:11px;color:var(--t2);margin-top:1px}
+.card-name-en{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.3}
+.sum-twd{font-size:10px;color:var(--t2);margin-top:2px}
+
+.sec-wrap{padding:10px 14px 2px;border-top:.5px solid var(--border)}
+.sec-hd{font-size:10px;color:var(--t2);font-weight:700;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+.trade-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border)}
+.trade-row:last-child{border-bottom:none;margin-bottom:4px}
+.trade-time{font-size:11px;color:var(--t2);flex-shrink:0}
+.trade-cond{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.trade-price{font-size:13px;font-weight:600;margin-left:auto}
+.no-data{font-size:12px;color:var(--t3);padding:4px 0 10px}
+.fallback-note{font-size:10px;color:var(--t3);padding:2px 0 8px;font-style:italic}
+
+.chart-wrap{position:relative;height:88px}
+.refresh-stamp{font-size:10px;color:var(--t3);padding:6px 14px 8px}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 24px 32px}
+.empty-icon{font-size:52px;margin-bottom:14px;opacity:.6}
+.empty-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px}
+.empty-sub{font-size:14px;line-height:1.7;color:var(--t2)}
+
+/* FAB */
+.fab{position:fixed;bottom:calc(var(--sb)+24px);right:20px;width:58px;height:58px;border-radius:29px;
+  background:var(--acc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  z-index:80;box-shadow:0 4px 20px rgba(83,74,183,.45);transition:transform .15s}
+.fab:active{transform:scale(.9)}
+.fab svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* SHEET */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.sheet{background:var(--card);border-radius:20px 20px 0 0;padding:0 0 calc(var(--sb)+16px);width:100%;max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.overlay.open .sheet{transform:translateY(0)}
+.handle{width:36px;height:4px;background:var(--t3);border-radius:2px;margin:10px auto 18px}
+.sheet-title{font-size:20px;font-weight:700;padding:0 20px 4px}
+.sheet-sub{font-size:13px;color:var(--t2);padding:0 20px 16px;line-height:1.5}
+.sheet-body{padding:0 20px}
+
+.f-lbl{font-size:13px;font-weight:700;color:var(--t2);margin-bottom:8px;display:block;letter-spacing:.3px}
+.f-group{margin-bottom:20px}
+.f-input{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;transition:border-color .2s}
+.f-input:focus{border-color:var(--acc)}
+
+/* 商品預覽 */
+.preview-card{display:flex;gap:12px;align-items:center;padding:12px;background:var(--bg);border-radius:12px;margin-bottom:20px;border:.5px solid var(--border)}
+.preview-img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--card)}
+.preview-name{font-size:13px;font-weight:600;line-height:1.35}
+.preview-sub{font-size:11px;color:var(--t2);margin-top:3px}
+
+.cond-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cond-opt{padding:10px 4px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;background:var(--bg);color:var(--t2);transition:all .15s;user-select:none}
+.cond-opt.sel{border-color:var(--acc);background:var(--acc-bg);color:var(--acc-t)}
+.cond-opt.has-price{color:var(--text)}
+.cond-opt.has-price::after{content:'·';color:var(--green);margin-left:2px;font-size:16px;line-height:0;vertical-align:-4px}
+
+.btn-main{width:100%;padding:15px;background:var(--acc);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity .2s}
+.btn-main:disabled{opacity:.5}
+.btn-cancel{width:100%;padding:13px;background:none;color:var(--t2);border:none;font-size:15px;cursor:pointer;margin-top:4px}
+.err-msg{font-size:13px;color:var(--red);margin-top:6px;min-height:18px;line-height:1.4}
+@keyframes bspin{to{transform:rotate(360deg)}}
+.bspin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:bspin .7s linear infinite;vertical-align:-3px;margin-right:6px}
+
+/* 無 proxy 時的提示 */
+.no-proxy-box{background:var(--red-bg);border-radius:var(--r);padding:16px;margin-bottom:16px;font-size:13px;line-height:1.7;color:var(--red)}
+.no-proxy-box code{background:rgba(0,0,0,.1);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px}
+
+.toast{position:fixed;bottom:calc(var(--sb)+100px);left:50%;transform:translateX(-50%) translateY(12px);
+  background:rgba(28,28,30,.92);color:#fff;font-size:14px;font-weight:500;padding:10px 20px;
+  border-radius:20px;white-space:nowrap;z-index:300;opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 市價追蹤器</h1>
+  <div class="hdr-btns">
+    <button class="icon-btn" id="refreshBtn" onclick="refreshAll()" title="全部更新">
+      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openSettings()" title="伺服器設定">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- 連線狀態 -->
+<div class="conn-banner checking" id="connBanner">
+  <div class="conn-dot"></div>
+  <span id="connText">正在確認連線...</span>
+</div>
+<div class="server-mode" id="serverMode"></div>
+
+<div class="summary">
+  <div class="sum-grid">
+    <div class="sum-cell"><div class="sum-lbl">總成本</div><div class="sum-val" id="sumCost">–</div></div>
+    <div class="sum-cell"><div class="sum-lbl">總市值</div><div class="sum-val" id="sumValue">–</div></div>
+    <div class="sum-cell"><div class="sum-lbl">損益</div><div class="sum-val neu" id="sumPnl">–</div></div>
+  </div>
+</div>
+
+<div id="cardList" class="card-list"></div>
+
+<button class="fab" onclick="openAdd()">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- ══ ADD SHEET ══ -->
+<div class="overlay" id="addOverlay" onclick="oClose(event,'addOverlay')">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-title">新增收藏</div>
+    <div class="sheet-sub" id="addSheetSub">輸入 SNKRDUNK 商品網址</div>
+    <div class="sheet-body">
+
+      <!-- 伺服器未連線時提示 -->
+      <div class="no-proxy-box" id="noProxyWarn" style="display:none">
+        <span id="noProxyWarnMsg">⚠️ 未偵測到本地代理伺服器，請先在電腦執行：<br><br><code>python proxy.py</code><br><br>或點右上角 ⚙️ 設定遠端伺服器。</span>
+      </div>
+
+      <div id="stepUrl">
+        <div class="f-group">
+          <label class="f-lbl">商品網址</label>
+          <input class="f-input" id="urlInput" type="url" inputmode="url"
+            placeholder="https://snkrdunk.com/apparels/94909">
+        </div>
+        <div class="err-msg" id="urlErr"></div>
+        <button class="btn-main" id="fetchBtn" onclick="fetchProduct()">查詢商品</button>
+        <button class="btn-cancel" onclick="closeAdd()">取消</button>
+      </div>
+
+      <div id="stepDetail" style="display:none">
+        <div class="preview-card" id="previewCard"></div>
+        <div class="f-group">
+          <label class="f-lbl">卡片狀態 <span style="font-weight:400;color:var(--t2);font-size:11px">（· 表示有出品）</span></label>
+          <div class="cond-grid" id="condGrid"></div>
+        </div>
+        <div class="f-group">
+          <label class="f-lbl">收購成本 (¥)</label>
+          <input class="f-input" id="costInput" type="number" inputmode="numeric" placeholder="例：45000">
+        </div>
+        <div class="err-msg" id="detailErr"></div>
+        <button class="btn-main" onclick="confirmAdd()">新增到收藏</button>
+        <button class="btn-cancel" onclick="backStep()">← 重新輸入網址</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS SHEET ══ -->
+<div class="overlay" id="setOverlay" onclick="oClose(event,'setOverlay')">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-title">伺服器設定</div>
+    <div class="sheet-sub">設定遠端伺服器後，即使手機不在家中 Wi-Fi 也能即時更新。</div>
+    <div class="sheet-body">
+
+      <div class="set-section">
+        <div class="set-section-title">自訂伺服器 URL</div>
+        <div class="set-hint">貼上你的 Cloudflare Worker 網址（或 ngrok 網址）。留空則使用本地代理 (proxy.py)。</div>
+        <div class="set-url-row">
+          <input class="f-input" id="serverUrlInput" type="url" inputmode="url"
+            placeholder="https://snkrdunk-proxy.xxx.workers.dev">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn-sub btn-save" onclick="saveServerUrl()">儲存</button>
+          <button class="btn-sub" onclick="clearServerUrl()">清除（用本地代理）</button>
+        </div>
+        <div class="set-status" id="setStatus"></div>
+      </div>
+
+      <div class="set-section">
+        <div class="set-section-title">新台幣匯率（1 JPY = ? TWD）</div>
+        <div class="set-hint">用於將日幣標價同步換算為新台幣。建議定期更新。</div>
+        <div class="set-url-row">
+          <input class="f-input" id="twdRateInput" type="number" inputmode="decimal" step="0.001" placeholder="例：0.215" style="font-size:15px;padding:11px 12px">
+          <button class="btn-sub btn-save" onclick="saveTwdRate()">儲存</button>
+        </div>
+        <div class="set-status" id="twdStatus"></div>
+      </div>
+
+      <div class="set-section">
+        <div class="set-section-title">方案 A：Cloudflare Workers（推薦）</div>
+        <div class="how-box">
+          <div class="how-box-title">☁️ 免費、不需電腦開機</div>
+          <div class="how-box-body">
+            1. 開啟 <b>dash.cloudflare.com</b>，登入或免費註冊<br>
+            2. 左側選 <b>Workers &amp; Pages → Create → Create Worker</b><br>
+            3. 把 <code>worker.js</code> 的內容全部貼入編輯器<br>
+            4. 點 <b>Save and deploy</b><br>
+            5. 複製顯示的網址，例如：<br>
+            &nbsp;&nbsp;<code>https://snkrdunk-proxy.你的名字.workers.dev</code><br>
+            6. 貼到上方「自訂伺服器 URL」欄位 → 儲存<br><br>
+            免費額度：每天 <b>100,000 次</b>請求，個人使用完全足夠。
+          </div>
+        </div>
+      </div>
+
+      <div class="set-section">
+        <div class="set-section-title">方案 B：ngrok（電腦需開機）</div>
+        <div class="how-box">
+          <div class="how-box-title">🚇 臨時外部連線，設定簡單</div>
+          <div class="how-box-body">
+            1. 先在電腦啟動本地代理：<code>python proxy.py</code><br>
+            2. 下載 <b>ngrok</b>（ngrok.com/download）並登入<br>
+            3. 執行：<code>ngrok http 8765</code><br>
+            4. 複製顯示的 https 網址，例如：<br>
+            &nbsp;&nbsp;<code>https://abc-123.ngrok-free.app</code><br>
+            5. 在上方「自訂伺服器 URL」填入（<b>需加 /api</b>）：<br>
+            &nbsp;&nbsp;<code>https://abc-123.ngrok-free.app/api</code><br><br>
+            ⚠️ 注意：ngrok 網址每次重啟都會變更，須重新設定。
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-cancel" onclick="hideSheet('setOverlay')">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   設定
+═══════════════════════════════════════ */
+const PSA_SET  = new Set(['PSA10','PSA9','PSA8以下','BGS10 BL','BGS10 GL','BGS9.5','BGS9.5以下','ARS10+','ARS10','ARS9','ARS8以下','他鑑定品']);
+const CONDITIONS = ['PSA10','PSA9','PSA8以下','BGS10 BL','BGS9.5','ARS10','A','B','C','D','他鑑定品'];
+const STORE = 'snkr_tracker_v5';
+
+/* ═══════════════════════════════════════
+   資料庫
+═══════════════════════════════════════ */
+let db = JSON.parse(localStorage.getItem(STORE) || '[]');
+function save(){ localStorage.setItem(STORE, JSON.stringify(db)) }
+
+/* ═══════════════════════════════════════
+   API 層
+   優先順序：
+   1. localStorage 自訂伺服器 URL（Cloudflare Worker 或 ngrok）
+   2. 跑在 proxy server（非 file://）→ /api
+   3. fallback → localhost:8765/api
+═══════════════════════════════════════ */
+const SERVER_KEY = 'snkr_server_url';
+
+function getApiBase(){
+  const custom = (localStorage.getItem(SERVER_KEY) || '').trim();
+  if(custom) return custom.replace(/\/$/, '');
+  if(location.protocol !== 'file:' && location.hostname !== '') return '/api';
+  return 'http://localhost:8765/api';
+}
+
+function serverLabel(){
+  const custom = (localStorage.getItem(SERVER_KEY) || '').trim();
+  if(custom){
+    if(custom.includes('workers.dev')) return 'Cloudflare Worker';
+    if(custom.includes('ngrok'))       return 'ngrok 隧道';
+    return '自訂伺服器';
+  }
+  if(location.protocol !== 'file:' && location.hostname !== '') return '本地代理 (Wi-Fi)';
+  return 'localhost:8765';
+}
+
+let proxyOK = false;
+
+async function apiFetch(path){
+  const url = getApiBase() + path;
+  const controller = new AbortController();
+  const tid = setTimeout(()=>controller.abort(), 12000);
+  try{
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(tid);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }catch(e){ clearTimeout(tid); throw e; }
+}
+
+/* 啟動時檢測伺服器是否可用 */
+async function checkProxy(){
+  const banner = document.getElementById('connBanner');
+  const txt    = document.getElementById('connText');
+  const mode   = document.getElementById('serverMode');
+  banner.className = 'conn-banner checking';
+  txt.textContent  = '正在確認連線...';
+  if(mode) mode.textContent = '';
+  try{
+    await apiFetch('/v1/apparels/94909');
+    proxyOK = true;
+    banner.className = 'conn-banner ok';
+    txt.textContent  = '已連線，資料即時更新';
+    if(mode) mode.textContent = '目前使用：' + serverLabel();
+  }catch(e){
+    proxyOK = false;
+    banner.className = 'conn-banner err';
+    const custom = (localStorage.getItem(SERVER_KEY)||'').trim();
+    if(custom){
+      txt.textContent = '自訂伺服器無回應 — 請確認伺服器網址是否正確';
+    } else {
+      txt.textContent = '未偵測到本地代理 — 請執行 python proxy.py 或設定遠端伺服器';
+    }
+    if(mode) mode.textContent = '';
+  }
+}
+
+/* ═══════════════════════════════════════
+   設定 sheet 邏輯
+═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   匯率
+═══════════════════════════════════════ */
+const TWD_KEY  = 'snkr_twd_rate';
+function getTwdRate(){ return parseFloat(localStorage.getItem(TWD_KEY)) || 0.215; }
+function toTWD(yen){ return yen ? Math.round(yen * getTwdRate()) : null; }
+const fmtTWD = n => n ? 'NT$'+Number(n).toLocaleString() : '';
+
+function saveTwdRate(){
+  const v = parseFloat(document.getElementById('twdRateInput').value);
+  const st = document.getElementById('twdStatus');
+  if(!v || v<=0 || v>1){ st.className='set-status err'; st.textContent='請輸入合理的匯率（如 0.215）'; return; }
+  localStorage.setItem(TWD_KEY, v);
+  st.className='set-status'; st.textContent='✓ 已儲存 1 JPY = '+v+' TWD';
+  renderAll();
+}
+
+function openSettings(){
+  document.getElementById('serverUrlInput').value = (localStorage.getItem(SERVER_KEY) || '').trim();
+  document.getElementById('twdRateInput').value   = getTwdRate();
+  document.getElementById('setStatus').textContent  = '';
+  document.getElementById('twdStatus').textContent  = '';
+  showSheet('setOverlay');
+}
+
+async function saveServerUrl(){
+  const val = document.getElementById('serverUrlInput').value.trim();
+  const st  = document.getElementById('setStatus');
+  if(!val){ st.className='set-status err'; st.textContent='請輸入有效的網址'; return; }
+  if(!/^https?:\/\//i.test(val)){ st.className='set-status err'; st.textContent='網址需以 http:// 或 https:// 開頭'; return; }
+  localStorage.setItem(SERVER_KEY, val);
+  st.className = 'set-status'; st.textContent = '儲存中，測試連線...';
+  await checkProxy();
+  if(proxyOK){
+    st.className = 'set-status'; st.textContent = '✓ 連線成功！';
+    setTimeout(()=>hideSheet('setOverlay'), 1000);
+  } else {
+    st.className = 'set-status err'; st.textContent = '⚠️ 伺服器無回應，請確認網址或伺服器狀態';
+  }
+}
+
+function clearServerUrl(){
+  localStorage.removeItem(SERVER_KEY);
+  document.getElementById('serverUrlInput').value = '';
+  const st = document.getElementById('setStatus');
+  st.className='set-status'; st.textContent='已清除，改用本地代理';
+  checkProxy();
+}
+
+/* ═══════════════════════════════════════
+   取得商品完整資料
+═══════════════════════════════════════ */
+async function fetchCardData(id, condition){
+  const condId = {PSA10:22,PSA9:23,'PSA8以下':24,'BGS10 BL':25,'BGS10 GL':26,'BGS9.5':27,'BGS9.5以下':28,'ARS10+':29,'ARS10':30,'ARS9':31,'ARS8以下':32,'他鑑定品':33,A:18,B:19,C:20,D:21}[condition] ?? -1;
+
+  const [infoR, usedR, histR, chartR] = await Promise.allSettled([
+    apiFetch(`/v1/apparels/${id}`),
+    apiFetch(`/v1/apparels/${id}/used?perPage=50&page=1&sizeId=0&isSaleOnly=false`),
+    apiFetch(`/v1/apparels/${id}/sales-history?size_id=0&page=1&per_page=20`),
+    apiFetch(`/v1/apparels/${id}/sales-chart/used?range=oneMonth&salesChartOptionId=${condId}`),
+  ]);
+
+  const info  = infoR.status  === 'fulfilled' ? infoR.value  : null;
+  const used  = usedR.status  === 'fulfilled' ? usedR.value  : null;
+  const hist  = histR.status  === 'fulfilled' ? histR.value  : null;
+  const chart = chartR.status === 'fulfilled' ? chartR.value : null;
+
+  /* 最低出品價：從在售清單依 displayShortConditionTitle 取最低價 */
+  let currentPrice = null;
+  const condMinMap = {};   /* condition → 最低在售價（供新增時條件選擇器標記用） */
+  if(used?.apparelUsedItems){
+    for(const it of used.apparelUsedItems){
+      const c = it.displayShortConditionTitle || '';
+      const p = it.price;
+      if(c && typeof p === 'number'){
+        if(!(c in condMinMap) || p < condMinMap[c]) condMinMap[c] = p;
+      }
+    }
+    if(condition in condMinMap) currentPrice = condMinMap[condition];
+  }
+
+  /* 近期成交 */
+  let trades = [], tradesFallback = false;
+  if(hist?.history?.length){
+    trades = hist.history.filter(h => h.condition === condition).slice(0,3);
+    if(!trades.length){ trades = hist.history.slice(0,3); tradesFallback = true; }
+    /* fallback 現價：最近 5 筆同狀態成交均價 */
+    if(!currentPrice){
+      const cs = hist.history.filter(h=>h.condition===condition).slice(0,5);
+      if(cs.length) currentPrice = Math.round(cs.reduce((s,h)=>s+h.price,0)/cs.length);
+    }
+  }
+
+  return {
+    name:       info?.name ?? '商品名稱讀取失敗',
+    nameEn:     info?.nameEn ?? info?.name_en ?? info?.englishName ?? '',
+    imageUrl:   info?.primaryMedia?.imageUrl ?? '',
+    currentPrice,
+    condMinMap,   /* 給條件選擇器用：標記哪些狀態有在售 */
+    trades, tradesFallback,
+    chartPoints: chart?.points ?? [],
+    refreshedAt: Date.now(),
+  };
+}
+
+/* ═══════════════════════════════════════
+   新增商品流程
+═══════════════════════════════════════ */
+let _fetched = null;   // 儲存查詢結果（新增步驟二用）
+let _addId   = '';
+let _selCond = 'PSA10';
+
+function openAdd(){
+  _fetched = null; _addId = ''; _selCond = 'PSA10';
+  document.getElementById('urlInput').value = '';
+  document.getElementById('urlErr').textContent = '';
+  document.getElementById('stepUrl').style.display   = '';
+  document.getElementById('stepDetail').style.display = 'none';
+  document.getElementById('noProxyWarn').style.display = proxyOK ? 'none' : '';
+  const custom = (localStorage.getItem(SERVER_KEY)||'').trim();
+  document.getElementById('noProxyWarnMsg').innerHTML = custom
+    ? `⚠️ 自訂伺服器無回應（${custom.replace(/https?:\/\//,'').split('/')[0]}），請確認伺服器狀態，或<button class="btn-cancel" style="display:inline;padding:0;font-size:13px;color:var(--acc)" onclick="openSettings()">重新設定</button>`
+    : `⚠️ 未偵測到本地代理伺服器，請先在電腦執行：<br><br><code>python proxy.py</code><br><br>或點右上角 ⚙️ 設定 Cloudflare Worker 遠端伺服器。`;
+  showSheet('addOverlay');
+}
+function closeAdd(){ hideSheet('addOverlay') }
+function backStep(){
+  document.getElementById('stepUrl').style.display    = '';
+  document.getElementById('stepDetail').style.display = 'none';
+}
+
+async function fetchProduct(){
+  const url   = document.getElementById('urlInput').value.trim();
+  const errEl = document.getElementById('urlErr');
+  const btn   = document.getElementById('fetchBtn');
+  const m     = url.match(/apparels\/(\d+)/);
+  if(!m){ errEl.textContent = '請輸入有效的 SNKRDUNK 商品網址'; return; }
+  _addId = m[1];
+  errEl.textContent = '';
+  btn.innerHTML = '<span class="bspin"></span>查詢中...';
+  btn.disabled  = true;
+
+  try{
+    /* 先拿基本資訊 + 在售清單，快速顯示預覽 */
+    const [infoR, usedR] = await Promise.allSettled([
+      apiFetch(`/v1/apparels/${_addId}`),
+      apiFetch(`/v1/apparels/${_addId}/used?perPage=50&page=1&sizeId=0&isSaleOnly=false`),
+    ]);
+    const info     = infoR.status === 'fulfilled' ? infoR.value : null;
+    const usedData = usedR.status === 'fulfilled' ? usedR.value : null;
+    if(!info?.name) throw new Error('無法取得商品資料，請確認網址正確');
+
+    _fetched = { info, usedData };
+
+    /* 預覽 */
+    const pc = document.getElementById('previewCard');
+    const nameEn = info.nameEn ?? info.name_en ?? info.englishName ?? '';
+    pc.innerHTML = `
+      ${info.primaryMedia?.imageUrl ? `<img class="preview-img" src="${info.primaryMedia.imageUrl}" alt="">` : ''}
+      <div>
+        <div class="preview-name">${info.name}</div>
+        ${nameEn && nameEn !== info.name ? `<div style="font-size:11px;color:var(--t2);margin-top:3px">${nameEn}</div>` : ''}
+        <div class="preview-sub">商品 ID: ${_addId}</div>
+      </div>`;
+
+    /* 條件選項：從在售清單標記有出品的狀態 */
+    const priceSet = new Set();
+    if(usedData?.apparelUsedItems){
+      for(const it of usedData.apparelUsedItems){
+        const c = it.displayShortConditionTitle;
+        if(c && typeof it.price === 'number') priceSet.add(c);
+      }
+    }
+    document.getElementById('condGrid').innerHTML = CONDITIONS.map(c=>`
+      <div class="cond-opt${c===_selCond?' sel':''}${priceSet.has(c)?' has-price':''}"
+           onclick="pickCond('${c}',this)">${c}</div>`).join('');
+
+    document.getElementById('detailErr').textContent = '';
+    document.getElementById('costInput').value = '';
+    document.getElementById('stepUrl').style.display    = 'none';
+    document.getElementById('stepDetail').style.display = '';
+  }catch(e){
+    errEl.textContent = '查詢失敗：' + e.message;
+  }finally{
+    btn.innerHTML = '查詢商品'; btn.disabled = false;
+  }
+}
+
+function pickCond(c, el){
+  _selCond = c;
+  document.querySelectorAll('#condGrid .cond-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+async function confirmAdd(){
+  const cost  = parseInt(document.getElementById('costInput').value) || 0;
+  const errEl = document.getElementById('detailErr');
+  const btn   = document.querySelector('#stepDetail .btn-main');
+  btn.innerHTML = '<span class="bspin"></span>載入中...'; btn.disabled = true;
+  errEl.textContent = '';
+
+  try{
+    const data = await fetchCardData(_addId, _selCond);
+    const idx  = db.findIndex(c=>c.id===_addId && c.condition===_selCond);
+    if(idx >= 0){
+      db[idx] = { ...db[idx], ...data, cost: cost || db[idx].cost };
+      toast('已更新收藏資料 ✓');
+    } else {
+      db.push({ id:_addId, condition:_selCond, cost, ...data });
+      toast('已新增到收藏 ✓');
+    }
+    save(); closeAdd(); renderAll();
+  }catch(e){
+    errEl.textContent = '新增失敗：' + e.message;
+  }finally{
+    btn.innerHTML = '新增到收藏'; btn.disabled = false;
+  }
+}
+
+/* ═══════════════════════════════════════
+   全部更新
+═══════════════════════════════════════ */
+async function refreshAll(){
+  if(!db.length){ toast('尚無收藏'); return; }
+  if(!proxyOK){ toast('伺服器未連線，請確認設定'); return; }
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning'); btn.disabled = true;
+
+  let ok = 0;
+  await Promise.all(db.map(async(c,i)=>{
+    try{
+      const d = await fetchCardData(c.id, c.condition);
+      db[i] = { ...c, ...d };
+      ok++;
+    }catch{}
+  }));
+  save(); renderAll();
+  btn.classList.remove('spinning'); btn.disabled = false;
+  toast(`已更新 ${ok}/${db.length} 張卡片 ✓`);
+}
+
+/* ═══════════════════════════════════════
+   渲染
+═══════════════════════════════════════ */
+let charts = {};
+
+function renderAll(){
+  const list = document.getElementById('cardList');
+  if(!db.length){
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🃏</div>
+        <div class="empty-title">尚無收藏</div>
+        <div class="empty-sub">點右下角 ＋ 新增第一張卡片</div>
+      </div>`;
+    updateSummary(); return;
+  }
+  list.innerHTML = db.map((c,i)=>cardHTML(c,i)).join('');
+  setTimeout(()=>db.forEach((_,i)=>initChart(i)), 60);
+  updateSummary();
+}
+
+const fmt  = n => n ? '¥'+Number(n).toLocaleString() : '–';
+const pOf  = (c,t) => (c-t)/t*100;
+const pStr = p => (p>=0?'+':'')+p.toFixed(1)+'%';
+const pCls = p => p>0?'pos':p<0?'neg':'neu';
+const bCls = c => PSA_SET.has(c)?'b-psa':'b-grade';
+function tsAgo(ts){
+  if(!ts) return '–';
+  const s = Math.round((Date.now()-ts)/1000);
+  if(s<60) return '剛剛';
+  if(s<3600) return Math.floor(s/60)+'分鐘前';
+  if(s<86400) return Math.floor(s/3600)+'小時前';
+  return Math.floor(s/86400)+'天前更新';
+}
+
+function cardHTML(c, i){
+  const hasPnl = c.currentPrice && c.cost;
+  const p = hasPnl ? pOf(c.currentPrice, c.cost) : null;
+  let tradesHTML = c.trades?.length
+    ? c.trades.map(t=>`
+        <div class="trade-row">
+          <span class="trade-time">${t.date}</span>
+          <span class="trade-cond badge ${bCls(t.condition)}">${t.condition}</span>
+          <span class="trade-price">${fmt(t.price)}</span>
+        </div>`).join('') + (c.tradesFallback?`<div class="fallback-note">※ 此狀態無記錄，顯示全狀態</div>`:'')
+    : `<div class="no-data">無成交記錄</div>`;
+
+  return `
+<div class="card-item" id="ci_${i}">
+  <button class="del-btn" onclick="delCard(${i})">✕</button>
+  <div class="card-top">
+    <div class="card-img-box">
+      ${c.imageUrl?`<img src="${c.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:28px>🃏</span>'">`:'<span style="font-size:28px">🃏</span>'}
+    </div>
+    <div class="card-meta">
+      <div class="card-name">${c.name}</div>
+      ${c.nameEn && c.nameEn !== c.name ? `<div class="card-name-en">${c.nameEn}</div>` : ''}
+      <div class="card-row">
+        <span class="badge ${bCls(c.condition)}">${c.condition}</span>
+        <span class="card-pnl ${p!==null?pCls(p):'neu'}">${p!==null?pStr(p):'–'}</span>
+      </div>
+    </div>
+  </div>
+  <div class="price-row">
+    <div class="price-cell">
+      <div class="p-lbl">收購成本</div>
+      <div class="p-val">${fmt(c.cost)}</div>
+      ${toTWD(c.cost)?`<div class="p-twd">${fmtTWD(toTWD(c.cost))}</div>`:''}
+    </div>
+    <div class="price-cell">
+      <div class="p-lbl">最低出售價</div>
+      <div class="p-val ${hasPnl?pCls(c.currentPrice-c.cost):''}">${fmt(c.currentPrice)}</div>
+      ${toTWD(c.currentPrice)?`<div class="p-twd">${fmtTWD(toTWD(c.currentPrice))}</div>`:''}
+    </div>
+  </div>
+  <div class="sec-wrap">
+    <div class="sec-hd">近期成交（${c.condition}）</div>
+    ${tradesHTML}
+  </div>
+  ${c.chartPoints?.length?`
+  <div class="sec-wrap">
+    <div class="sec-hd">一個月走勢</div>
+    <div class="chart-wrap"><canvas id="ch_${i}" role="img" aria-label="價格走勢"></canvas></div>
+  </div>`:''}
+  <div class="refresh-stamp">更新於 ${tsAgo(c.refreshedAt)}</div>
+</div>`;
+}
+
+function initChart(i){
+  const c = db[i]; if(!c?.chartPoints?.length) return;
+  const el = document.getElementById('ch_'+i); if(!el) return;
+  if(charts[i]) charts[i].destroy();
+  const dark = matchMedia('(prefers-color-scheme:dark)').matches;
+  charts[i] = new Chart(el,{
+    type:'line',
+    data:{
+      labels: c.chartPoints.map(([ts])=>{ const d=new Date(ts); return (d.getMonth()+1)+'/'+(d.getDate()) }),
+      datasets:[{
+        data: c.chartPoints.map(([,v])=>v),
+        borderColor:'#534AB7',
+        backgroundColor: dark?'rgba(83,74,183,.12)':'rgba(83,74,183,.07)',
+        fill:true,tension:.35,pointRadius:0,borderWidth:1.5
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'¥'+ctx.parsed.y.toLocaleString()}}},
+      scales:{x:{display:false},y:{display:false,grace:'10%'}}
+    }
+  });
+}
+
+function updateSummary(){
+  let cost=0,val=0,hasVal=false;
+  db.forEach(c=>{ if(c.cost) cost+=Number(c.cost); if(c.currentPrice){val+=c.currentPrice;hasVal=true} });
+  const sc = document.getElementById('sumCost');
+  sc.innerHTML = cost ? fmt(cost)+(toTWD(cost)?`<div class="sum-twd">${fmtTWD(toTWD(cost))}</div>`:'') : '–';
+  const sv = document.getElementById('sumValue');
+  sv.innerHTML = hasVal ? fmt(val)+(toTWD(val)?`<div class="sum-twd">${fmtTWD(toTWD(val))}</div>`:'') : '–';
+  const el = document.getElementById('sumPnl');
+  if(cost&&hasVal){ const p=pOf(val,cost); el.textContent=pStr(p); el.className='sum-val '+pCls(p); }
+  else { el.textContent='–'; el.className='sum-val neu'; }
+}
+
+function delCard(i){
+  if(!confirm('確定刪除？')) return;
+  if(charts[i]) charts[i].destroy();
+  db.splice(i,1); save(); toast('已刪除'); renderAll();
+}
+
+function showSheet(id){ const o=document.getElementById(id); o.style.display='flex'; requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('open'))); }
+function hideSheet(id){ const o=document.getElementById(id); o.classList.remove('open'); setTimeout(()=>o.style.display='none',300); }
+function oClose(e,id){ if(e.target===e.currentTarget) hideSheet(id); }
+
+function toast(msg,ms=2400){
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),ms);
+}
+
+/* ═══════════════════════════════════════
+   啟動
+═══════════════════════════════════════ */
+function fitBodyPadding(){
+  const h = document.querySelector('header').getBoundingClientRect().height;
+  document.body.style.paddingTop = (h + 10) + 'px';
+}
+fitBodyPadding();
+window.addEventListener('resize', fitBodyPadding);
+
+checkProxy();
+renderAll();
+</script>
+</body>
+</html>
