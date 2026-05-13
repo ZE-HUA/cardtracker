@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <title>市價追蹤器</title>
 <style>
@@ -17,7 +17,11 @@
   --red:#D85A30;--red-bg:#FAECE7;
   --blue:#185FA5;--blue-bg:#E6F1FB;
   --r:12px;
-  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+
+  /* iPhone PWA / 加入主畫面安全區：避免 header 與時間、電池重疊 */
+  --st: env(safe-area-inset-top, 0px);
+  --sb: env(safe-area-inset-bottom, 0px);
+  --header-h: 54px;
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#000;--card:#1C1C1E;--text:#F2F2F7;--t2:#8E8E93;--t3:#48484A;
@@ -27,12 +31,24 @@
   --red:#F09595;--red-bg:#501313;
   --blue:#378ADD;--blue-bg:#042C53;
 }}
+
+/* 在 iPhone「加入主畫面」standalone 模式下，safe-area 有時會回傳 0；給最小上方安全距離 */
+@supports (padding: max(0px)) {
+  @media (display-mode: standalone) {
+    :root {
+      --st: max(env(safe-area-inset-top), 44px);
+    }
+  }
+}
+
 html{background:var(--bg)}
 body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang TC',sans-serif;
-  padding-top:calc(env(safe-area-inset-top,0px) + 64px);
-  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
+  padding-top:calc(var(--st) + var(--header-h) + 12px);
+  padding-bottom:calc(var(--sb) + 88px)}
 
-header{position:fixed;top:0;left:0;right:0;z-index:90;padding:calc(env(safe-area-inset-top,0px)+10px) 16px 10px;
+header{position:fixed;top:0;left:0;right:0;z-index:90;
+  min-height:calc(var(--st) + var(--header-h));
+  padding:var(--st) 16px 0;
   background:rgba(242,241,246,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
   border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 @media(prefers-color-scheme:dark){header{background:rgba(0,0,0,.9)}}
@@ -793,16 +809,8 @@ function toast(msg,ms=2400){
 /* ═══════════════════════════════════════
    啟動
 ═══════════════════════════════════════ */
-function fitBodyPadding(){
-  const h = document.querySelector('header').getBoundingClientRect().height;
-  if(h > 20) document.body.style.paddingTop = (h + 12) + 'px';
-}
-/* 多次觸發確保 PWA / safe-area 完全 ready 後再校正 */
-requestAnimationFrame(()=>requestAnimationFrame(()=>{
-  fitBodyPadding();
-  setTimeout(fitBodyPadding, 400);
-}));
-window.addEventListener('resize', fitBodyPadding);
+/* header 與 body 的上方距離已改由 CSS safe-area 變數控制，
+   避免 JS 動態覆蓋 padding-top 造成 iPhone PWA 狀態列重疊。 */
 
 checkProxy();
 renderAll();
