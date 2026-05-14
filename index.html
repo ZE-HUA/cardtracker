@@ -207,7 +207,7 @@ header h1{font-size:17px;font-weight:700}
 .search-chevron{flex-shrink:0;opacity:.35}
 .search-empty{font-size:13px;color:var(--t2);text-align:center;padding:24px 0}
 
-.qty-btn{width:26px;height:26px;border-radius:7px;background:var(--acc-bg);color:var(--acc-t);border:none;font-size:17px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;transition:opacity .15s}
+.qty-btn{width:18px;height:18px;border-radius:5px;background:var(--acc-bg);color:var(--acc-t);border:none;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;transition:opacity .15s}
 .qty-btn:active{opacity:.45}
 
 .toast{position:fixed;bottom:calc(var(--sb)+100px);left:50%;transform:translateX(-50%) translateY(12px);
@@ -1158,7 +1158,7 @@ function groupHTML(g){
           <span class="metric-val">${fmtTWD(avgCost)}</span>
         </div>
         <div class="metric-row">
-          <span class="metric-lbl">PSA10 最新成交</span>
+          <span class="metric-lbl">最新成交</span>
           <span class="metric-val ${hasPnl?pCls(valueTwd-avgCost):''}">${fmtTWD(valueTwd)}</span>
         </div>
         <div class="metric-row">
@@ -1382,6 +1382,62 @@ async function fetchRankPage(path){
 
 let _rankData = [];
 
+/* ── PSA10 判斷：容忍各種 condition 欄位名稱與大小寫 ── */
+function isPSA10(t){
+  const v = t.condition ?? t.conditionTitle ?? t.grade ?? t.gradeTitle
+              ?? t.conditionName ?? t.saleCondition ?? '';
+  return String(v).toUpperCase().replace(/\s/g,'') === 'PSA10';
+}
+
+/* ── 日本語相対時間文字列 → ms タイムスタンプ（例: "2時間前" → Date.now()-7200000）── */
+function parseRelativeDate(raw){
+  if(raw == null) return null;
+  const s = String(raw).trim();
+
+  // たった今 / 今
+  if(/^(たった今|今)$/.test(s)) return Date.now();
+
+  let m;
+  // X分前
+  m = s.match(/^(\d+)\s*分前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 60 * 1000;
+  // X時間前
+  m = s.match(/^(\d+)\s*時間前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 3600 * 1000;
+  // X日前
+  m = s.match(/^(\d+)\s*日前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 86400 * 1000;
+  // X週間前 / X週前
+  m = s.match(/^(\d+)\s*週間?前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 7 * 86400 * 1000;
+  // Xヶ月前 / Xか月前
+  m = s.match(/^(\d+)\s*[ヶか]月前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 30 * 86400 * 1000;
+  // X年前
+  m = s.match(/^(\d+)\s*年前$/);
+  if(m) return Date.now() - parseInt(m[1]) * 365 * 86400 * 1000;
+
+  // fallback: Unix 秒・ミリ秒・ISO 文字列
+  const n = Number(s);
+  if(!isNaN(n) && n > 1e9  && n < 2e10)  return n * 1000;
+  if(!isNaN(n) && n > 1e12 && n < 2e13)  return n;
+  const d = new Date(s.replace(/\//g,'-'));
+  return isNaN(d.getTime()) ? null : d.getTime();
+}
+
+/* ── 成交金額取得 ── */
+function tradePrice(t){
+  return t.price ?? t.salePrice ?? t.amount ?? t.soldPrice ?? t.saleAmount ?? null;
+}
+
+/* ── 成交記錄の date フィールドをタイムスタンプへ ── */
+function tradeDateOf(t){
+  return parseRelativeDate(
+    t.date ?? t.soldAt ?? t.createdAt ?? t.tradedAt
+      ?? t.transactionDate ?? t.saleDate ?? t.purchasedAt
+  );
+}
+
 async function scanRanking(){
   const btn  = document.getElementById('rankScanBtn');
   const list = document.getElementById('rankList');
@@ -1389,19 +1445,18 @@ async function scanRanking(){
   if(!proxyOK){ toast('請先確認伺服器連線'); return; }
 
   btn.disabled = true; btn.textContent = '載入中...';
-  list.innerHTML = '<div class="rank-loading">正在讀取 page 1–5...</div>';
+  list.innerHTML = '<div class="rank-loading">讀取榜單 page 1–5...</div>';
 
   try{
     const base = new URL(getRankBaseUrl());
     base.searchParams.delete('page');
-    const basePath = base.pathname + base.search; // 不含 page=
+    const basePath = base.pathname + base.search;
 
-    // 同時抓 5 頁
+    /* ① 同時抓 5 頁商品清單 */
     const pageResults = await Promise.allSettled(
       [1,2,3,4,5].map(p => fetchRankPage(basePath + '&page=' + p))
     );
 
-    // 合併、去重（保留 SNKRDUNK 原始排序）
     const seen = new Set();
     _rankData = [];
     for(const r of pageResults){
@@ -1415,6 +1470,9 @@ async function scanRanking(){
           name:     p.name,
           nameEn:   p.nameEn ?? p.name_en ?? p.englishName ?? '',
           imageUrl: p.primaryMedia?.imageUrl ?? '',
+          volume6h:    null,
+          change6h:    null,
+          latestPrice: null,
         });
       }
     }
@@ -1423,7 +1481,54 @@ async function scanRanking(){
       list.innerHTML = '<div class="rank-empty">無法讀取資料，請確認伺服器連線</div>';
       return;
     }
+
     if(meta) meta.textContent = `ONE PIECE 熱門排行・共 ${_rankData.length} 筆`;
+    list.innerHTML = `<div class="rank-loading">找到 ${_rankData.length} 筆，抓取成交資料...</div>`;
+
+    const cutoff6h = Date.now() - 24 * 3600 * 1000;
+
+    /* ② 平行抓每個品項的成交歷史 */
+    await Promise.allSettled(_rankData.map(async (item, idx) => {
+      try{
+        const hist = await apiFetch(`/v1/apparels/${item.id}/sales-history?size_id=0&page=1&per_page=50`);
+
+        // 容忍各種頂層欄位名
+        const all = hist?.history ?? hist?.salesHistory ?? hist?.data?.history
+                    ?? hist?.data ?? (Array.isArray(hist) ? hist : []);
+
+        // PSA10 篩選
+        const psa10 = all.filter(t => isPSA10(t));
+
+        // 6h 以内の成交（"2時間前" 等の相対時間 → タイムスタンプ変換で判定）
+        const recent = psa10.filter(t => {
+          const ts = tradeDateOf(t);
+          return ts !== null && ts >= cutoff6h;
+        });
+
+        item.volume6h = recent.length;
+
+        // 漲跌幅：6h内 ≥2 筆 → 最新 vs 最舊
+        //         6h内 1 筆  → vs 6h外第一筆 PSA10
+        if(recent.length >= 2){
+          const newest = tradePrice(recent[0]);
+          const oldest = tradePrice(recent[recent.length - 1]);
+          if(oldest) item.change6h = (newest - oldest) / oldest * 100;
+        } else if(recent.length === 1){
+          const newest = tradePrice(recent[0]);
+          const prev   = psa10.find(t => {
+            const ts = tradeDateOf(t);
+            return ts !== null && ts < cutoff6h;
+          });
+          const p = prev ? tradePrice(prev) : null;
+          if(p) item.change6h = (newest - p) / p * 100;
+        }
+
+        // 最新 PSA10 成交價
+        if(psa10.length) item.latestPrice = tradePrice(psa10[0]);
+
+      }catch(e){}
+    }));
+
     renderRanking(_rankData);
 
   }catch(e){
@@ -1437,9 +1542,22 @@ function renderRanking(data){
   const list = document.getElementById('rankList');
   if(!data.length){ list.innerHTML = '<div class="rank-empty">沒有資料</div>'; return; }
 
-  list.innerHTML = data.map((item, i)=>{
-    const isTop = i < 3;
-    const inDB  = db.some(c => c.id === item.id);
+  list.innerHTML = data.map((item, i) => {
+    const isTop  = i < 3;
+    const inDB   = db.some(c => c.id === item.id);
+
+    // 6h内 PSA10 成交量
+    const volTxt = item.volume6h !== null
+      ? `${item.volume6h > 0 ? '🔥 ' : ''}${item.volume6h} 筆`
+      : '–';
+
+    // 漲跌幅
+    const chgTxt = item.change6h !== null ? pStr(item.change6h) : '–';
+    const chgCls = item.change6h !== null ? pCls(item.change6h) : '';
+
+    // 最新 PSA10 成交價（TWD）
+    const priceTxt = item.latestPrice ? fmtTWD(toTWD(item.latestPrice)) : '–';
+
     return `
 <div class="rank-item" onclick="window.open('https://snkrdunk.com/apparels/${item.id}','_blank')">
   <span class="rank-num${isTop?' top':''}">${i+1}</span>
@@ -1451,7 +1569,15 @@ function renderRanking(data){
   <div class="rank-info">
     <div class="rank-name">${item.name}</div>
     ${item.nameEn && item.nameEn !== item.name
-      ? `<div style="font-size:10px;color:var(--t2);margin-top:2px">${item.nameEn}</div>` : ''}
+      ? `<div style="font-size:10px;color:var(--t2);margin-bottom:3px">${item.nameEn}</div>` : ''}
+    <div class="rank-metrics">
+      <span style="font-size:10px;font-weight:700;background:var(--acc-bg);color:var(--acc-t);padding:1px 5px;border-radius:4px;white-space:nowrap">PSA10 24h</span>
+      <span style="color:var(--t2);font-size:10px">成交</span><span style="font-weight:600">${volTxt}</span>
+      <span style="color:var(--t3)">·</span>
+      <span style="color:var(--t2);font-size:10px">漲跌</span><span class="${chgCls}" style="font-weight:600">${chgTxt}</span>
+      <span style="color:var(--t3)">·</span>
+      <span style="color:var(--t2);font-size:10px">最新</span><span style="font-weight:600">${priceTxt}</span>
+    </div>
   </div>
   <button class="rank-add-btn" title="${inDB?'已在收藏':'加入收藏'}"
     onclick="event.stopPropagation();addFromRanking('${item.id}')">
