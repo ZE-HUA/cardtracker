@@ -39,7 +39,7 @@
 html{background:var(--bg)}
 body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang TC',sans-serif;
   padding-top:calc(var(--st) + var(--header-h) + 12px);
-  padding-bottom:calc(var(--sb) + 88px)}
+  padding-bottom:calc(var(--sb) + 120px)}
 
 header{position:fixed;top:0;left:0;right:0;z-index:90;
   min-height:calc(var(--st) + var(--header-h));
@@ -150,7 +150,7 @@ header h1{font-size:17px;font-weight:700}
 .empty-sub{font-size:14px;line-height:1.7;color:var(--t2)}
 
 /* FAB */
-.fab{position:fixed;bottom:calc(var(--sb)+24px);right:20px;width:58px;height:58px;border-radius:29px;
+.fab{position:fixed;bottom:calc(var(--sb)+72px);right:20px;width:58px;height:58px;border-radius:29px;
   background:var(--acc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
   z-index:80;box-shadow:0 4px 20px rgba(83,74,183,.45);transition:transform .15s}
 .fab:active{transform:scale(.9)}
@@ -207,10 +207,50 @@ header h1{font-size:17px;font-weight:700}
 .search-chevron{flex-shrink:0;opacity:.35}
 .search-empty{font-size:13px;color:var(--t2);text-align:center;padding:24px 0}
 
+.qty-btn{width:26px;height:26px;border-radius:7px;background:var(--acc-bg);color:var(--acc-t);border:none;font-size:17px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;transition:opacity .15s}
+.qty-btn:active{opacity:.45}
+
 .toast{position:fixed;bottom:calc(var(--sb)+100px);left:50%;transform:translateX(-50%) translateY(12px);
   background:rgba(28,28,30,.92);color:#fff;font-size:14px;font-weight:500;padding:10px 20px;
   border-radius:20px;white-space:nowrap;z-index:300;opacity:0;transition:all .25s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── 底部分頁導航 ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:85;
+  background:var(--card);border-top:.5px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;
+  padding-bottom:var(--sb);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.bottom-nav-btn{padding:10px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;cursor:pointer;color:var(--t2);transition:color .15s}
+.bottom-nav-btn.active{color:var(--acc)}
+.bottom-nav-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav-label{font-size:10px;font-weight:600;letter-spacing:.2px}
+
+/* ── 排行榜頁面 ── */
+.rank-header{padding:12px 12px 8px;display:flex;gap:8px;align-items:center}
+.rank-search-input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none}
+.rank-search-input:focus{border-color:var(--acc)}
+.rank-scan-btn{padding:10px 16px;background:var(--acc);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.rank-scan-btn:disabled{opacity:.5}
+.rank-sort-bar{display:flex;gap:0;margin:0 12px 10px;background:var(--bg);border-radius:10px;padding:3px}
+.rank-sort-btn{flex:1;padding:7px;border:none;background:none;border-radius:8px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .15s}
+.rank-sort-btn.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.rank-list{padding:0 12px;display:flex;flex-direction:column;gap:8px}
+.rank-item{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;cursor:pointer;transition:opacity .15s}
+.rank-item:active{opacity:.5}
+.rank-num{font-size:15px;font-weight:800;width:22px;text-align:center;flex-shrink:0;color:var(--t2)}
+.rank-num.top{color:var(--acc)}
+.rank-thumb-wrap{width:52px;height:52px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.rank-thumb{width:100%;height:100%;object-fit:contain;transform:scale(1.35);transform-origin:center}
+.rank-info{flex:1;min-width:0}
+.rank-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:4px}
+.rank-metrics{font-size:11px;color:var(--t2);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.rank-change{font-weight:700;font-size:12px}
+.rank-add-btn{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--acc-bg);color:var(--acc-t);border:none;font-size:18px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.rank-add-btn:active{opacity:.5}
+.rank-empty{text-align:center;padding:48px 24px;color:var(--t2);font-size:14px;line-height:1.8}
+.rank-loading{text-align:center;padding:32px;color:var(--t2);font-size:13px}
 </style>
 </head>
 <body>
@@ -233,6 +273,7 @@ header h1{font-size:17px;font-weight:700}
   </div>
 </header>
 
+<div id="pageCollection">
 <div class="conn-banner checking" id="connBanner">
   <div class="conn-dot"></div>
   <span id="connText">正在確認連線...</span>
@@ -248,8 +289,19 @@ header h1{font-size:17px;font-weight:700}
 </div>
 
 <div id="cardList" class="card-list"></div>
+</div><!-- /pageCollection -->
 
-<button class="fab" onclick="openAdd()">
+<div id="pageRanking" style="display:none">
+  <div class="rank-header" style="justify-content:space-between">
+    <div style="font-size:12px;color:var(--t2)" id="rankMeta">ONE PIECE 熱門排行</div>
+    <button class="rank-scan-btn" id="rankScanBtn" onclick="scanRanking()" style="padding:9px 14px;font-size:13px">↺ 重新整理</button>
+  </div>
+  <div id="rankList" class="rank-list">
+    <div class="rank-empty">載入中...</div>
+  </div>
+</div>
+
+<button class="fab" id="fabBtn" onclick="openAdd()">
   <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 
@@ -288,11 +340,15 @@ header h1{font-size:17px;font-weight:700}
           <div class="cond-grid" id="condGrid"></div>
         </div>
         <div class="f-group">
-          <label class="f-lbl">收購成本 (NT$)</label>
+          <label class="f-lbl">購入成本 (NT$)</label>
           <input class="f-input" id="costInput" type="number" inputmode="numeric" placeholder="例：9500">
         </div>
+        <div class="f-group">
+          <label class="f-lbl">購入日期</label>
+          <input class="f-input" id="dateInput" type="date">
+        </div>
         <div class="err-msg" id="detailErr"></div>
-        <button class="btn-main" onclick="confirmAdd()">新增到收藏</button>
+        <button class="btn-main" id="confirmBtn" onclick="confirmAdd()">新增到收藏</button>
         <button class="btn-cancel" onclick="backStep()">← 重新輸入網址</button>
       </div>
     </div>
@@ -328,6 +384,21 @@ header h1{font-size:17px;font-weight:700}
           <button class="btn-sub btn-save" onclick="saveTwdRate()">儲存</button>
         </div>
         <div class="set-status" id="twdStatus"></div>
+      </div>
+
+      <div class="set-section">
+        <div class="set-section-title">排行榜來源網址</div>
+        <div class="set-hint">留空則使用預設（ONE PIECE 熱門）。貼上其他 SNKRDUNK 搜尋網址可自訂來源。</div>
+        <div class="set-url-row">
+          <input class="f-input" id="rankUrlInput" type="url" inputmode="url"
+            placeholder="https://snkrdunk.com/search?keywords=...&sort=hottest"
+            style="font-size:13px;padding:11px 12px">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn-sub btn-save" onclick="saveRankUrl()">儲存</button>
+          <button class="btn-sub" onclick="clearRankUrl()">清除</button>
+        </div>
+        <div class="set-status" id="rankUrlStatus"></div>
       </div>
 
       <div class="set-section">
@@ -371,6 +442,48 @@ header h1{font-size:17px;font-weight:700}
   </div>
 </div>
 
+<!-- ══ QUICK-ADD SHEET ══ -->
+<div class="overlay" id="qaOverlay" onclick="oClose(event,'qaOverlay')">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-title">新增一張</div>
+    <div class="sheet-sub" id="qaSubtitle"></div>
+    <div class="sheet-body">
+      <div class="f-group">
+        <label class="f-lbl">購入成本 (NT$)</label>
+        <input class="f-input" id="qaCostInput" type="number" inputmode="numeric" placeholder="例：9500"
+          onkeydown="if(event.key==='Enter')confirmQuickAdd()">
+      </div>
+      <div class="f-group">
+        <label class="f-lbl">購入日期</label>
+        <input class="f-input" id="qaDateInput" type="date">
+      </div>
+      <button class="btn-main" id="qaConfirmBtn" onclick="confirmQuickAdd()">新增一張</button>
+      <button class="btn-cancel" onclick="hideSheet('qaOverlay')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DELETE SHEET ══ -->
+<div class="overlay" id="delOverlay" onclick="oClose(event,'delOverlay')">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-title" id="delSheetTitle">選擇要刪除的記錄</div>
+    <div class="sheet-body" id="delSheetBody"></div>
+  </div>
+</div>
+
+<div class="bottom-nav" id="bottomNav">
+  <button class="bottom-nav-btn active" id="tabCollection" onclick="switchTab('collection')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="bottom-nav-label">我的收藏</span>
+  </button>
+  <button class="bottom-nav-btn" id="tabRanking" onclick="switchTab('ranking')">
+    <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    <span class="bottom-nav-label">市場排行</span>
+  </button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -385,6 +498,7 @@ const SERVER_KEY = 'snkr_server_url';
 const TWD_KEY    = 'snkr_twd_rate';
 const CLOUD_AT   = 'snkr_cloud_at';
 const UID_KEY    = 'snkr_user_id';   // 用戶識別碼，隔離多人資料
+const RANK_URL_KEY = 'snkr_rank_url'; // 排行榜來源網址
 
 /* ════════════════════════════════════════
    資料庫（localStorage）
@@ -597,14 +711,38 @@ function saveUid(){
 }
 
 function openSettings(){
-  document.getElementById('serverUrlInput').value = (localStorage.getItem(SERVER_KEY)||'').trim();
-  document.getElementById('twdRateInput').value   = getTwdRate();
+  document.getElementById('serverUrlInput').value  = (localStorage.getItem(SERVER_KEY)||'').trim();
+  document.getElementById('twdRateInput').value    = getTwdRate();
+  document.getElementById('rankUrlInput').value    = (localStorage.getItem(RANK_URL_KEY)||'').trim();
   document.getElementById('uidInput').value        = localStorage.getItem(UID_KEY) || '';
-  document.getElementById('setStatus').textContent  = '';
-  document.getElementById('twdStatus').textContent  = '';
-  document.getElementById('uidStatus').textContent  = '';
-  document.getElementById('cloudStatus').textContent = '';
+  document.getElementById('setStatus').textContent    = '';
+  document.getElementById('twdStatus').textContent    = '';
+  document.getElementById('rankUrlStatus').textContent = '';
+  document.getElementById('uidStatus').textContent    = '';
+  document.getElementById('cloudStatus').textContent  = '';
   showSheet('setOverlay');
+}
+
+function saveRankUrl(){
+  const val = document.getElementById('rankUrlInput').value.trim();
+  const st  = document.getElementById('rankUrlStatus');
+  if(!val){ st.className='set-status err'; st.textContent='請輸入網址'; return; }
+  if(!/^https?:\/\//i.test(val)){ st.className='set-status err'; st.textContent='網址需以 https:// 開頭'; return; }
+  localStorage.setItem(RANK_URL_KEY, val);
+  st.className='set-status'; st.textContent='✓ 已儲存，下次切換到市場排行時自動載入';
+  updateRankSourceLabel();
+}
+
+function clearRankUrl(){
+  localStorage.removeItem(RANK_URL_KEY);
+  document.getElementById('rankUrlInput').value = '';
+  document.getElementById('rankUrlStatus').className='set-status';
+  document.getElementById('rankUrlStatus').textContent='已清除';
+  updateRankSourceLabel();
+}
+
+function updateRankSourceLabel(){
+  // 排行頁的 meta 文字由 scanRanking 執行後更新，此函式保留供相容
 }
 
 async function saveServerUrl(){
@@ -692,6 +830,8 @@ function openAdd(){
   _fetched = null; _addId = ''; _selCond = 'PSA10';
   document.getElementById('urlInput').value = '';
   document.getElementById('urlErr').textContent = '';
+  // 預設今天
+  document.getElementById('dateInput').value = new Date().toISOString().slice(0,10);
   document.getElementById('stepUrl').style.display    = '';
   document.getElementById('stepDetail').style.display = 'none';
   const warn = document.getElementById('noProxyWarn');
@@ -866,21 +1006,17 @@ function pickCond(c, el){
 }
 
 async function confirmAdd(){
-  const costTwd = parseInt(document.getElementById('costInput').value) || 0;
-  const errEl   = document.getElementById('detailErr');
-  const btn     = document.querySelector('#stepDetail .btn-main');
+  const costTwd      = parseInt(document.getElementById('costInput').value) || 0;
+  const purchaseDate = document.getElementById('dateInput').value || new Date().toISOString().slice(0,10);
+  const errEl = document.getElementById('detailErr');
+  const btn   = document.getElementById('confirmBtn');
   btn.innerHTML = '<span class="bspin"></span>載入中...'; btn.disabled = true;
   errEl.textContent = '';
   try{
     const data = await fetchCardData(_addId, _selCond);
-    const idx  = db.findIndex(c=>c.id===_addId && c.condition===_selCond);
-    if(idx >= 0){
-      db[idx] = { ...db[idx], ...data, costTwd: costTwd || getCostTwd(db[idx]), costCurrency:'TWD' };
-      toast('已更新收藏資料 ✓');
-    } else {
-      db.push({ id:_addId, condition:_selCond, costTwd, costCurrency:'TWD', ...data });
-      toast('已新增到收藏 ✓');
-    }
+    // 每次永遠新增一筆獨立記錄（不合併）
+    db.push({ id:_addId, condition:_selCond, costTwd, costCurrency:'TWD', purchaseDate, ...data });
+    toast('已新增到收藏 ✓');
     saveAndPush(); closeAdd(); renderAll();
   }catch(e){
     errEl.textContent = '新增失敗：' + e.message;
@@ -898,11 +1034,15 @@ async function refreshAll(){
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning'); btn.disabled = true;
   let ok = 0;
-  await Promise.all(db.map(async(c,i)=>{
+  // 同品項只打一次 API，結果套用到該品項的所有 db 記錄
+  const groups = getGroups();
+  await Promise.all(groups.map(async g => {
     try{
-      const d = await fetchCardData(c.id, c.condition);
-      db[i] = { ...c, ...d };
-      ok++;
+      const d = await fetchCardData(g.id, g.condition);
+      g.entries.forEach(e => {
+        db[e._dbIdx] = { ...db[e._dbIdx], ...d };
+        ok++;
+      });
     }catch{}
   }));
   saveAndPush(); renderAll();
@@ -915,9 +1055,32 @@ async function refreshAll(){
 ════════════════════════════════════════ */
 let charts = {};
 
+/* 將 db 依 id+condition 分組，並依總市值由大到小排序 */
+function getGroups(){
+  const map = new Map();
+  db.forEach((c, dbIdx) => {
+    const key = c.id + '_' + c.condition;
+    if(!map.has(key)) map.set(key, { key, id: c.id, condition: c.condition, entries: [] });
+    map.get(key).entries.push({ ...c, _dbIdx: dbIdx });
+  });
+  return [...map.values()].sort((a, b) => {
+    const latest = g => g.entries.reduce((best, e) =>
+      (e.refreshedAt||0) > (best.refreshedAt||0) ? e : best, g.entries[0]);
+    const aVal = (toTWD(latest(a).currentPrice)||0) * a.entries.length;
+    const bVal = (toTWD(latest(b).currentPrice)||0) * b.entries.length;
+    return bVal - aVal;
+  });
+}
+
+function destroyAllCharts(){
+  Object.values(charts).forEach(ch=>{ try{ ch.destroy(); }catch(_){} });
+  charts = {};
+}
+
 function renderAll(){
   const list = document.getElementById('cardList');
   if(!db.length){
+    destroyAllCharts();
     list.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🃏</div>
@@ -926,8 +1089,9 @@ function renderAll(){
       </div>`;
     updateSummary(); return;
   }
-  list.innerHTML = db.map((c,i)=>cardHTML(c,i)).join('');
-  setTimeout(()=>db.forEach((_,i)=>initChart(i)), 60);
+  const groups = getGroups();
+  list.innerHTML = groups.map(g => groupHTML(g)).join('');
+  setTimeout(() => groups.forEach(g => initGroupChart(g)), 60);
   updateSummary();
 }
 
@@ -945,11 +1109,20 @@ function tsAgo(ts){
   return Math.floor(s/86400)+'天前更新';
 }
 
-function cardHTML(c, i){
-  const costTwd  = getCostTwd(c);
+/* 將 group key 轉成 DOM-safe id */
+const safeId = key => key.replace(/[^a-zA-Z0-9]/g, '_');
+
+function groupHTML(g){
+  // 以最近更新的 entry 取卡片資訊（名稱、圖片、成交記錄等）
+  const c = g.entries.reduce((best, e) =>
+    (e.refreshedAt||0) > (best.refreshedAt||0) ? e : best, g.entries[0]);
+  const qty      = g.entries.length;
+  const avgCost  = Math.round(g.entries.reduce((s,e)=>s+(getCostTwd(e)||0),0) / qty);
   const valueTwd = toTWD(c.currentPrice);
-  const hasPnl   = valueTwd && costTwd;
-  const p        = hasPnl ? pOf(valueTwd, costTwd) : null;
+  const hasPnl   = valueTwd && avgCost;
+  const p        = hasPnl ? pOf(valueTwd, avgCost) : null;
+  const sid      = safeId(g.key);
+
   let tradesHTML = c.trades?.length
     ? c.trades.map(t=>`
         <div class="trade-row">
@@ -960,8 +1133,7 @@ function cardHTML(c, i){
     : `<div class="no-data">無成交記錄</div>`;
 
   return `
-<div class="card-item" id="ci_${i}">
-  <button class="del-btn" onclick="delCard(${i})">✕</button>
+<div class="card-item" id="cg_${sid}">
   <div class="card-top">
     <div class="card-img-box">
       ${c.imageUrl?`<img src="${c.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:28px>🃏</span>'">`:'<span style="font-size:28px">🃏</span>'}
@@ -974,12 +1146,20 @@ function cardHTML(c, i){
       ${c.nameEn && c.nameEn !== c.name ? `<div class="card-name-en">${c.nameEn}</div>` : ''}
       <div class="card-metrics">
         <div class="metric-row">
-          <span class="metric-lbl">收購成本</span>
-          <span class="metric-val">${fmtTWD(costTwd)}</span>
+          <span class="metric-lbl">目前庫存</span>
+          <span class="metric-val" style="display:flex;align-items:center;gap:7px">
+            <button class="qty-btn" onclick="openDeleteSheet('${g.key}')">－</button>
+            <span>${qty} 張</span>
+            <button class="qty-btn" onclick="openQuickAdd('${g.key}')">＋</button>
+          </span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-lbl">平均成本</span>
+          <span class="metric-val">${fmtTWD(avgCost)}</span>
         </div>
         <div class="metric-row">
           <span class="metric-lbl">PSA10 最新成交</span>
-          <span class="metric-val ${hasPnl?pCls(valueTwd-costTwd):''}">${fmtTWD(valueTwd)}</span>
+          <span class="metric-val ${hasPnl?pCls(valueTwd-avgCost):''}">${fmtTWD(valueTwd)}</span>
         </div>
         <div class="metric-row">
           <span class="metric-lbl">目前漲幅</span>
@@ -995,18 +1175,20 @@ function cardHTML(c, i){
   ${c.chartPoints?.length?`
   <div class="sec-wrap">
     <div class="sec-hd">PSA10 一個月走勢</div>
-    <div class="chart-wrap"><canvas id="ch_${i}" role="img" aria-label="價格走勢"></canvas></div>
+    <div class="chart-wrap"><canvas id="ch_${sid}" role="img" aria-label="價格走勢"></canvas></div>
   </div>`:''}
   <div class="refresh-stamp">更新於 ${tsAgo(c.refreshedAt)}</div>
 </div>`;
 }
 
-function initChart(i){
-  const c = db[i]; if(!c?.chartPoints?.length) return;
-  const el = document.getElementById('ch_'+i); if(!el) return;
-  if(charts[i]) charts[i].destroy();
+function initGroupChart(g){
+  const c = g.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, g.entries[0]);
+  if(!c?.chartPoints?.length) return;
+  const sid = safeId(g.key);
+  const el  = document.getElementById('ch_'+sid); if(!el) return;
+  if(charts[g.key]) charts[g.key].destroy();
   const dark = matchMedia('(prefers-color-scheme:dark)').matches;
-  charts[i] = new Chart(el,{
+  charts[g.key] = new Chart(el,{
     type:'line',
     data:{
       labels: c.chartPoints.map(([ts])=>{ const d=new Date(ts); return (d.getMonth()+1)+'/'+(d.getDate()) }),
@@ -1036,8 +1218,8 @@ function updateSummary(){
   let cost=0,val=0,hasVal=false;
   db.forEach(c=>{
     const ct=getCostTwd(c), vt=toTWD(c.currentPrice);
-    if(ct) cost+=ct;
-    if(vt){ val+=vt; hasVal=true; }
+    if(ct) cost += ct;
+    if(vt){ val += vt; hasVal=true; }
   });
   document.getElementById('sumCost').innerHTML  = cost   ? fmtTWD(cost) : '–';
   document.getElementById('sumValue').innerHTML = hasVal ? fmtTWD(val)  : '–';
@@ -1046,11 +1228,81 @@ function updateSummary(){
   else { el.textContent='–'; el.className='sum-val neu'; }
 }
 
-function delCard(i){
-  if(!confirm('確定刪除？')) return;
-  if(charts[i]) charts[i].destroy();
-  db.splice(i,1);
+/* ── 快速新增（直接沿用現有卡片資料，只輸入成本+日期）── */
+let _qaGKey = null;
+
+function openQuickAdd(gKey){
+  _qaGKey = gKey;
+  const group = getGroups().find(g => g.key === gKey);
+  if(!group) return;
+  const rep = group.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, group.entries[0]);
+  document.getElementById('qaSubtitle').textContent = `${rep.name}（${group.condition}）`;
+  document.getElementById('qaCostInput').value = '';
+  document.getElementById('qaDateInput').value  = new Date().toISOString().slice(0,10);
+  showSheet('qaOverlay');
+  setTimeout(()=>document.getElementById('qaCostInput').focus(), 350);
+}
+
+async function confirmQuickAdd(){
+  if(!_qaGKey) return;
+  const costTwd      = parseInt(document.getElementById('qaCostInput').value) || 0;
+  const purchaseDate = document.getElementById('qaDateInput').value || new Date().toISOString().slice(0,10);
+  const btn = document.getElementById('qaConfirmBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="bspin"></span>新增中...';
+  try{
+    const group = getGroups().find(g => g.key === _qaGKey);
+    if(!group) throw new Error('找不到此品項');
+    const rep = group.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, group.entries[0]);
+    // 複製最新資料，只覆蓋成本與日期（_dbIdx 是 getGroups 暫時欄位，不存入）
+    const { _dbIdx, ...cardData } = rep;
+    db.push({ ...cardData, costTwd, costCurrency:'TWD', purchaseDate });
+    saveAndPush();
+    hideSheet('qaOverlay');
+    toast('已新增一張 ✓');
+    renderAll();
+  }catch(e){
+    toast('新增失敗：'+e.message);
+  }finally{
+    btn.disabled = false; btn.innerHTML = '新增一張';
+  }
+}
+
+function openDeleteSheet(gKey){
+  const group = getGroups().find(g => g.key === gKey);
+  if(!group) return;
+  document.getElementById('delSheetTitle').textContent =
+    `刪除哪一筆？（共 ${group.entries.length} 張）`;
+  document.getElementById('delSheetBody').innerHTML = `
+    <div style="padding:0 0 8px">
+      ${group.entries.map(e => {
+        const dateLabel = e.purchaseDate || '日期未記錄';
+        const costLabel = fmtTWD(getCostTwd(e));
+        return `
+        <div style="display:flex;align-items:center;justify-content:space-between;
+          padding:14px 0;border-bottom:.5px solid var(--border)">
+          <div>
+            <div style="font-size:15px;font-weight:600">${dateLabel}</div>
+            <div style="font-size:12px;color:var(--t2);margin-top:2px">購入成本 ${costLabel}</div>
+          </div>
+          <button onclick="confirmDelEntry(${e._dbIdx})"
+            style="background:var(--red-bg);color:var(--red);border:none;border-radius:8px;
+              padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0">
+            刪除
+          </button>
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="btn-cancel" onclick="hideSheet('delOverlay')">取消</button>`;
+  showSheet('delOverlay');
+}
+
+function confirmDelEntry(dbIdx){
+  if(dbIdx < 0 || dbIdx >= db.length){ toast('找不到記錄'); hideSheet('delOverlay'); return; }
+  const c = db[dbIdx];
+  if(!confirm(`確定刪除 ${c.purchaseDate||''} 這筆 ${c.name}（${c.condition}）？`)) return;
+  db.splice(dbIdx, 1);
   saveAndPush();
+  hideSheet('delOverlay');
   toast('已刪除'); renderAll();
 }
 
@@ -1064,9 +1316,163 @@ function toast(msg,ms=2400){
 }
 
 /* ════════════════════════════════════════
+   分頁切換
+════════════════════════════════════════ */
+let _rankLoaded = false; // 本次 session 是否已載入過
+
+function switchTab(tab){
+  const isCol = tab === 'collection';
+  document.getElementById('pageCollection').style.display = isCol ? '' : 'none';
+  document.getElementById('pageRanking').style.display    = isCol ? 'none' : '';
+  document.getElementById('tabCollection').classList.toggle('active', isCol);
+  document.getElementById('tabRanking').classList.toggle('active', !isCol);
+  document.getElementById('fabBtn').style.display = isCol ? '' : 'none';
+
+  if(!isCol){
+    updateRankSourceLabel();
+    // 切換到排行分頁時，若尚未載入且有來源 URL，自動掃描
+    if(!_rankLoaded && localStorage.getItem(RANK_URL_KEY)){
+      _rankLoaded = true;
+      scanRanking();
+    }
+  }
+}
+
+/* ════════════════════════════════════════
+   市場排行（SNKRDUNK 推薦順序，page 1–5）
+════════════════════════════════════════ */
+const DEFAULT_RANK_URL = 'https://snkrdunk.com/search?keywords=ONE+PIECE+%E3%83%88%E3%83%AC%E3%82%AB+%28%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%89%29&searchCategoryIds=6%2F33&brandIds=onepiece&sort=hottest&page=1';
+
+function getRankBaseUrl(){
+  const saved = (localStorage.getItem(RANK_URL_KEY)||'').trim();
+  return saved || DEFAULT_RANK_URL;
+}
+
+/* 抓單一頁面的商品清單 */
+async function fetchRankPage(path){
+  const url  = getApiBase() + path;
+  const ctrl = new AbortController();
+  const tid  = setTimeout(()=>ctrl.abort(), 14000);
+  try{
+    const res  = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(tid);
+    const html = await res.text();
+
+    // 優先解析 __NEXT_DATA__
+    const ndMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>(.+?)<\/script>/s);
+    if(ndMatch){
+      try{
+        const nd = JSON.parse(ndMatch[1]);
+        const pp = nd?.props?.pageProps;
+        const list = pp?.apparels ?? pp?.searchResult?.apparels ??
+                     pp?.data?.apparels ?? pp?.initialData?.apparels ?? [];
+        if(list.length) return list;
+      }catch(_){}
+    }
+    // fallback：抽 ID 再批次取詳情
+    const idSet = new Set();
+    let m; const re = /\/apparels\/(\d+)/g;
+    while((m = re.exec(html)) !== null) idSet.add(m[1]);
+    const ids = [...idSet].slice(0, 20);
+    if(!ids.length) return [];
+    const rs = await Promise.allSettled(ids.map(id=>apiFetch(`/v1/apparels/${id}`)));
+    return rs.filter(r=>r.status==='fulfilled'&&r.value?.id).map(r=>r.value);
+  }catch(e){ clearTimeout(tid); return []; }
+}
+
+let _rankData = [];
+
+async function scanRanking(){
+  const btn  = document.getElementById('rankScanBtn');
+  const list = document.getElementById('rankList');
+  const meta = document.getElementById('rankMeta');
+  if(!proxyOK){ toast('請先確認伺服器連線'); return; }
+
+  btn.disabled = true; btn.textContent = '載入中...';
+  list.innerHTML = '<div class="rank-loading">正在讀取 page 1–5...</div>';
+
+  try{
+    const base = new URL(getRankBaseUrl());
+    base.searchParams.delete('page');
+    const basePath = base.pathname + base.search; // 不含 page=
+
+    // 同時抓 5 頁
+    const pageResults = await Promise.allSettled(
+      [1,2,3,4,5].map(p => fetchRankPage(basePath + '&page=' + p))
+    );
+
+    // 合併、去重（保留 SNKRDUNK 原始排序）
+    const seen = new Set();
+    _rankData = [];
+    for(const r of pageResults){
+      if(r.status !== 'fulfilled') continue;
+      for(const p of r.value){
+        const sid = String(p.id);
+        if(seen.has(sid)) continue;
+        seen.add(sid);
+        _rankData.push({
+          id:       sid,
+          name:     p.name,
+          nameEn:   p.nameEn ?? p.name_en ?? p.englishName ?? '',
+          imageUrl: p.primaryMedia?.imageUrl ?? '',
+        });
+      }
+    }
+
+    if(!_rankData.length){
+      list.innerHTML = '<div class="rank-empty">無法讀取資料，請確認伺服器連線</div>';
+      return;
+    }
+    if(meta) meta.textContent = `ONE PIECE 熱門排行・共 ${_rankData.length} 筆`;
+    renderRanking(_rankData);
+
+  }catch(e){
+    list.innerHTML = `<div class="rank-empty">載入失敗：${e.message}</div>`;
+  }finally{
+    btn.disabled = false; btn.textContent = '↺ 重新整理';
+  }
+}
+
+function renderRanking(data){
+  const list = document.getElementById('rankList');
+  if(!data.length){ list.innerHTML = '<div class="rank-empty">沒有資料</div>'; return; }
+
+  list.innerHTML = data.map((item, i)=>{
+    const isTop = i < 3;
+    const inDB  = db.some(c => c.id === item.id);
+    return `
+<div class="rank-item" onclick="window.open('https://snkrdunk.com/apparels/${item.id}','_blank')">
+  <span class="rank-num${isTop?' top':''}">${i+1}</span>
+  <div class="rank-thumb-wrap">
+    ${item.imageUrl
+      ? `<img class="rank-thumb" src="${item.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:20px>🃏</span>'">`
+      : '<span style="font-size:20px">🃏</span>'}
+  </div>
+  <div class="rank-info">
+    <div class="rank-name">${item.name}</div>
+    ${item.nameEn && item.nameEn !== item.name
+      ? `<div style="font-size:10px;color:var(--t2);margin-top:2px">${item.nameEn}</div>` : ''}
+  </div>
+  <button class="rank-add-btn" title="${inDB?'已在收藏':'加入收藏'}"
+    onclick="event.stopPropagation();addFromRanking('${item.id}')">
+    ${inDB ? '✓' : '+'}
+  </button>
+</div>`;
+  }).join('');
+}
+
+async function addFromRanking(id){
+  switchTab('collection');
+  openAdd();
+  document.getElementById('urlInput').value = `https://snkrdunk.com/apparels/${id}`;
+  await doSearch();
+}
+
+/* ════════════════════════════════════════
    啟動
 ════════════════════════════════════════ */
 setCloudBtn(getWorkerBase() ? 'ok' : null);
+updateRankSourceLabel();
 checkProxy().then(()=>{
   // 連線成功後，自動從雲端同步（靜默）
   if(getWorkerBase()){
