@@ -241,8 +241,8 @@ header h1{font-size:17px;font-weight:700}
 .rank-item:active{opacity:.5}
 .rank-num{font-size:15px;font-weight:800;width:22px;text-align:center;flex-shrink:0;color:var(--t2)}
 .rank-num.top{color:var(--acc)}
-.rank-thumb-wrap{width:80px;height:100px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.rank-thumb{width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
+.rank-thumb-wrap{width:52px;height:52px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.rank-thumb{width:100%;height:100%;object-fit:contain;transform:scale(1.35);transform-origin:center}
 .rank-info{flex:1;min-width:0}
 .rank-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:4px}
 .rank-metrics{font-size:11px;color:var(--t2);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
@@ -285,6 +285,18 @@ header h1{font-size:17px;font-weight:700}
     <div class="sum-cell"><div class="sum-lbl">總成本</div><div class="sum-val" id="sumCost">–</div></div>
     <div class="sum-cell"><div class="sum-lbl">總市值</div><div class="sum-val" id="sumValue">–</div></div>
     <div class="sum-cell"><div class="sum-lbl">損益</div><div class="sum-val neu" id="sumPnl">–</div></div>
+  </div>
+</div>
+
+<!-- 最漲 / 最跌 警示 -->
+<div id="glWidget" style="display:none;margin:0 12px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+  <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
+    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">🚀 最漲</div>
+    <div id="glGainer"></div>
+  </div>
+  <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
+    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">📉 最跌</div>
+    <div id="glLoser"></div>
   </div>
 </div>
 
@@ -1226,6 +1238,47 @@ function updateSummary(){
   const el = document.getElementById('sumPnl');
   if(cost&&hasVal){ const p=pOf(val,cost); el.textContent=pStr(p); el.className='sum-val '+pCls(p); }
   else { el.textContent='–'; el.className='sum-val neu'; }
+  updateGainerLoser();
+}
+
+function updateGainerLoser(){
+  const widget = document.getElementById('glWidget');
+  const groups = getGroups();
+
+  // 每個 group 計算漲跌幅
+  const withPnl = groups.map(g => {
+    const rep = g.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, g.entries[0]);
+    const valueTwd = toTWD(rep.currentPrice);
+    const totalCost = g.entries.reduce((s,e)=>s+getCostTwd(e),0);
+    const avgCost = totalCost / g.entries.length;
+    if(!valueTwd || !avgCost) return null;
+    const diff = valueTwd - avgCost;   // 每張市值價差
+    const pct  = diff / avgCost * 100;
+    return { rep, diff, pct };
+  }).filter(Boolean);
+
+  if(withPnl.length < 1){ widget.style.display='none'; return; }
+  widget.style.display='grid';
+
+  withPnl.sort((a,b)=>b.pct - a.pct);
+  renderGLCard('glGainer', withPnl[0]);
+  renderGLCard('glLoser',  withPnl[withPnl.length-1]);
+}
+
+function renderGLCard(id, item){
+  const el = document.getElementById(id);
+  if(!item){ el.innerHTML='<div style="color:var(--t2);font-size:11px;text-align:center">–</div>'; return; }
+  const { rep, diff, pct } = item;
+  const cls = pct >= 0 ? 'pos' : 'neg';
+  const sign = diff >= 0 ? '+' : '';
+  el.innerHTML = `
+    <div style="text-align:center">
+      ${rep.imageUrl
+        ? `<img src="${rep.imageUrl}" style="width:100%;height:120px;object-fit:contain;border-radius:8px;display:block;margin:0 auto 8px">`
+        : `<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 8px">🃏</div>`}
+      <div class="${cls}" style="font-size:14px;font-weight:700;line-height:1.2">${pStr(pct)}</div>
+      <div class="${cls}" style="font-size:11px;font-weight:600;margin-top:2px">${sign}${fmtTWD(Math.round(Math.abs(diff)))}</div>
+    </div>`;
 }
 
 /* ── 快速新增（直接沿用現有卡片資料，只輸入成本+日期）── */
