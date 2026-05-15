@@ -29,18 +29,15 @@
   --red:#F09595;--red-bg:#501313;
   --blue:#378ADD;--blue-bg:#042C53;
 }}
-
 @supports (padding: max(0px)) {
   @media (display-mode: standalone) {
     :root { --st: max(env(safe-area-inset-top), 44px); }
   }
 }
-
 html{background:var(--bg)}
 body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang TC',sans-serif;
   padding-top:calc(var(--st) + var(--header-h) + 12px);
   padding-bottom:calc(var(--sb) + 120px)}
-
 header{position:fixed;top:0;left:0;right:0;z-index:90;
   min-height:calc(var(--st) + var(--header-h));
   padding:var(--st) 16px 0;
@@ -54,12 +51,10 @@ header h1{font-size:17px;font-weight:700}
 .icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinning svg{animation:spin .8s linear infinite}
-
 /* 雲端同步圖示狀態 */
 .cloud-ok  svg{stroke:var(--green)}
 .cloud-err svg{stroke:var(--red)}
 .cloud-off svg{stroke:var(--t3)}
-
 /* 設定 sheet 專用 */
 .set-section{margin-bottom:22px}
 .set-section-title{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
@@ -77,14 +72,12 @@ header h1{font-size:17px;font-weight:700}
 .how-box-body code{background:var(--card);padding:2px 6px;border-radius:5px;font-family:monospace;font-size:11px;color:var(--text);border:.5px solid var(--border)}
 .how-box-body b{color:var(--text);font-weight:600}
 .server-mode{font-size:11px;color:var(--t2);padding:0 16px 6px}
-
 /* 連線狀態 banner */
 .conn-banner{margin:12px 12px 0;padding:10px 14px;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:8px}
 .conn-banner.ok{background:var(--green-bg);color:var(--green)}
 .conn-banner.err{background:var(--red-bg);color:var(--red)}
 .conn-banner.checking{background:var(--acc-bg);color:var(--acc-t)}
 .conn-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
-
 /* SUMMARY */
 .summary{margin:10px 12px 8px;background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden}
 .sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
@@ -93,13 +86,12 @@ header h1{font-size:17px;font-weight:700}
 .sum-lbl{font-size:10px;color:var(--t2);margin-bottom:5px;font-weight:600;letter-spacing:.3px}
 .sum-val{font-size:17px;font-weight:700;letter-spacing:-.5px}
 .pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--t2)}
-
 /* CARDS */
 .card-list{padding:0 12px;display:flex;flex-direction:column;gap:12px}
 .card-item{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden;position:relative}
-.card-top{display:flex;gap:14px;padding:12px 36px 12px 12px;align-items:flex-start}
-.card-img-box{flex-shrink:0;width:132px;height:132px;border-radius:14px;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-img-box img{width:100%;height:100%;object-fit:contain;transform:scale(1.5);transform-origin:center}
+.card-top{display:flex;gap:14px;padding:12px 36px 12px 12px;align-items:stretch}
+.card-img-box{flex-shrink:0;width:132px;min-height:132px;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-img-box img{width:100%;height:100%;object-fit:cover;transform-origin:center}
 .card-meta{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start}
 .card-name{font-size:14px;font-weight:600;line-height:1.35}
 .card-name-link{color:var(--text);text-decoration:none}
@@ -119,7 +111,6 @@ header h1{font-size:17px;font-weight:700}
   .metric-lbl{overflow:visible;text-overflow:clip}
   .metric-val{font-size:12.5px;min-width:0}
 }
-
 .card-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
 .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
 .b-psa{background:var(--acc-bg);color:var(--acc-t)}
@@ -127,9 +118,7 @@ header h1{font-size:17px;font-weight:700}
 .card-pnl{font-size:15px;font-weight:700}
 .del-btn{position:absolute;top:10px;right:10px;background:var(--bg);border:none;border-radius:50%;width:26px;height:26px;font-size:13px;cursor:pointer;color:var(--t2);display:flex;align-items:center;justify-content:center}
 .del-btn:active{opacity:.5}
-
 .card-name-en{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.3}
-
 .sec-wrap{padding:10px 14px 2px;border-top:.5px solid var(--border)}
 .sec-hd{font-size:10px;color:var(--t2);font-weight:700;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
 .trade-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border)}
@@ -139,23 +128,19 @@ header h1{font-size:17px;font-weight:700}
 .trade-price{font-size:13px;font-weight:600;margin-left:auto}
 .no-data{font-size:12px;color:var(--t3);padding:4px 0 10px}
 .fallback-note{font-size:10px;color:var(--t3);padding:2px 0 8px;font-style:italic}
-
 .chart-wrap{position:relative;height:150px;padding:4px 2px 0}
 .refresh-stamp{font-size:10px;color:var(--t3);padding:6px 14px 8px}
-
 /* EMPTY */
 .empty-state{text-align:center;padding:60px 24px 32px}
 .empty-icon{font-size:52px;margin-bottom:14px;opacity:.6}
 .empty-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px}
 .empty-sub{font-size:14px;line-height:1.7;color:var(--t2)}
-
 /* FAB */
 .fab{position:fixed;bottom:calc(var(--sb)+72px);right:20px;width:58px;height:58px;border-radius:29px;
   background:var(--acc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
   z-index:80;box-shadow:0 4px 20px rgba(83,74,183,.45);transition:transform .15s}
 .fab:active{transform:scale(.9)}
 .fab svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
 /* SHEET */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .overlay.open{display:flex}
@@ -167,34 +152,28 @@ header h1{font-size:17px;font-weight:700}
 .sheet-sub a{color:var(--acc);font-weight:700;text-decoration:none}
 .sheet-sub a:active{opacity:.5}
 .sheet-body{padding:0 20px}
-
 .f-lbl{font-size:13px;font-weight:700;color:var(--t2);margin-bottom:8px;display:block;letter-spacing:.3px}
 .f-group{margin-bottom:20px}
 .f-input{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;transition:border-color .2s}
 .f-input:focus{border-color:var(--acc)}
-
 /* 商品預覽 */
 .preview-card{display:flex;gap:14px;align-items:center;padding:12px;background:var(--bg);border-radius:12px;margin-bottom:20px;border:.5px solid var(--border)}
 .preview-img{width:96px;height:96px;object-fit:contain;border-radius:10px;background:var(--card);transform:scale(1.65);transform-origin:center}
 .preview-name{font-size:13px;font-weight:600;line-height:1.35}
 .preview-sub{font-size:11px;color:var(--t2);margin-top:3px}
-
 .cond-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cond-opt{padding:10px 4px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;background:var(--bg);color:var(--t2);transition:all .15s;user-select:none}
 .cond-opt.sel{border-color:var(--acc);background:var(--acc-bg);color:var(--acc-t)}
 .cond-opt.has-price{color:var(--text)}
 .cond-opt.has-price::after{content:'·';color:var(--green);margin-left:2px;font-size:16px;line-height:0;vertical-align:-4px}
-
 .btn-main{width:100%;padding:15px;background:var(--acc);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity .2s}
 .btn-main:disabled{opacity:.5}
 .btn-cancel{width:100%;padding:13px;background:none;color:var(--t2);border:none;font-size:15px;cursor:pointer;margin-top:4px}
 .err-msg{font-size:13px;color:var(--red);margin-top:6px;min-height:18px;line-height:1.4}
 @keyframes bspin{to{transform:rotate(360deg)}}
 .bspin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:bspin .7s linear infinite;vertical-align:-3px;margin-right:6px}
-
 .no-proxy-box{background:var(--red-bg);border-radius:var(--r);padding:16px;margin-bottom:16px;font-size:13px;line-height:1.7;color:var(--red)}
 .no-proxy-box code{background:rgba(0,0,0,.1);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px}
-
 /* 搜尋結果清單 */
 .search-result-list{display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-bottom:4px}
 .search-result-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:12px;border:.5px solid var(--border);cursor:pointer;transition:opacity .15s;-webkit-tap-highlight-color:transparent}
@@ -206,15 +185,12 @@ header h1{font-size:17px;font-weight:700}
 .search-result-sub{font-size:11px;color:var(--t2);margin-top:2px}
 .search-chevron{flex-shrink:0;opacity:.35}
 .search-empty{font-size:13px;color:var(--t2);text-align:center;padding:24px 0}
-
 .qty-btn{width:18px;height:18px;border-radius:5px;background:var(--acc-bg);color:var(--acc-t);border:none;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;transition:opacity .15s}
 .qty-btn:active{opacity:.45}
-
 .toast{position:fixed;bottom:calc(var(--sb)+100px);left:50%;transform:translateX(-50%) translateY(12px);
   background:rgba(28,28,30,.92);color:#fff;font-size:14px;font-weight:500;padding:10px 20px;
   border-radius:20px;white-space:nowrap;z-index:300;opacity:0;transition:all .25s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 /* ── 底部分頁導航 ── */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:85;
   background:var(--card);border-top:.5px solid var(--border);
@@ -226,7 +202,6 @@ header h1{font-size:17px;font-weight:700}
 .bottom-nav-btn.active{color:var(--acc)}
 .bottom-nav-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .bottom-nav-label{font-size:10px;font-weight:600;letter-spacing:.2px}
-
 /* ── 排行榜頁面 ── */
 .rank-header{padding:12px 12px 8px;display:flex;gap:8px;align-items:center}
 .rank-search-input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none}
@@ -254,7 +229,6 @@ header h1{font-size:17px;font-weight:700}
 </style>
 </head>
 <body>
-
 <header>
   <h1>💀 Card Price Tracker</h1>
   <div class="hdr-btns">
@@ -272,14 +246,12 @@ header h1{font-size:17px;font-weight:700}
     </button>
   </div>
 </header>
-
 <div id="pageCollection">
 <div class="conn-banner checking" id="connBanner">
   <div class="conn-dot"></div>
   <span id="connText">正在確認連線...</span>
 </div>
 <div class="server-mode" id="serverMode"></div>
-
 <div class="summary">
   <div class="sum-grid">
     <div class="sum-cell"><div class="sum-lbl">總成本</div><div class="sum-val" id="sumCost">–</div></div>
@@ -287,36 +259,37 @@ header h1{font-size:17px;font-weight:700}
     <div class="sum-cell"><div class="sum-lbl">損益</div><div class="sum-val neu" id="sumPnl">–</div></div>
   </div>
 </div>
-
+<!-- 價格異常警示 -->
+<div id="priceAlertWidget" style="display:none;margin:0 12px 8px"></div>
 <!-- 最漲 / 最跌 警示 -->
 <div id="glWidget" style="display:none;margin:0 12px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
   <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
-    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">🚀 最漲</div>
+    <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:.3px">🚀 最漲</div>
     <div id="glGainer"></div>
   </div>
   <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
-    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">📉 最跌</div>
+    <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:.3px">💩 最跌</div>
     <div id="glLoser"></div>
   </div>
 </div>
-
 <div id="cardList" class="card-list"></div>
 </div><!-- /pageCollection -->
-
 <div id="pageRanking" style="display:none">
   <div class="rank-header" style="justify-content:space-between">
     <div style="font-size:12px;color:var(--t2)" id="rankMeta">ONE PIECE 熱門排行</div>
     <button class="rank-scan-btn" id="rankScanBtn" onclick="scanRanking()" style="padding:9px 14px;font-size:13px">↺ 重新整理</button>
   </div>
+  <div class="rank-sort-bar" style="margin-bottom:8px">
+    <button class="rank-sort-btn active" id="rankTabOnepiece" onclick="switchRankCategory('onepiece')">🏴‍☠️ ONE PIECE</button>
+    <button class="rank-sort-btn" id="rankTabPokemon" onclick="switchRankCategory('pokemon')">⚡ Pokémon</button>
+  </div>
   <div id="rankList" class="rank-list">
     <div class="rank-empty">載入中...</div>
   </div>
 </div>
-
 <button class="fab" id="fabBtn" onclick="openAdd()">
   <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
-
 <!-- ══ ADD SHEET ══ -->
 <div class="overlay" id="addOverlay" onclick="oClose(event,'addOverlay')">
   <div class="sheet">
@@ -338,7 +311,6 @@ header h1{font-size:17px;font-weight:700}
         <button class="btn-main" id="fetchBtn" onclick="doSearch()">搜尋商品</button>
         <button class="btn-cancel" onclick="closeAdd()">取消</button>
       </div>
-
       <!-- 搜尋結果 -->
       <div id="stepResults" style="display:none">
         <div class="f-lbl" style="margin-bottom:12px" id="searchResultTitle">搜尋結果</div>
@@ -366,7 +338,6 @@ header h1{font-size:17px;font-weight:700}
     </div>
   </div>
 </div>
-
 <!-- ══ SETTINGS SHEET ══ -->
 <div class="overlay" id="setOverlay" onclick="oClose(event,'setOverlay')">
   <div class="sheet">
@@ -374,7 +345,6 @@ header h1{font-size:17px;font-weight:700}
     <div class="sheet-title">設定</div>
     <div class="sheet-sub">伺服器、匯率、跨裝置同步</div>
     <div class="sheet-body">
-
       <div class="set-section">
         <div class="set-section-title">自訂伺服器 URL</div>
         <div class="set-hint">貼上你的 Cloudflare Worker 網址。留空則使用本地代理 (proxy.py)。</div>
@@ -387,7 +357,6 @@ header h1{font-size:17px;font-weight:700}
         </div>
         <div class="set-status" id="setStatus"></div>
       </div>
-
       <div class="set-section">
         <div class="set-section-title">日幣換算匯率（1 JPY = ? TWD）</div>
         <div class="set-hint">SNKRDUNK 市價為日幣，系統用此匯率換算成新台幣顯示。</div>
@@ -397,7 +366,6 @@ header h1{font-size:17px;font-weight:700}
         </div>
         <div class="set-status" id="twdStatus"></div>
       </div>
-
       <div class="set-section">
         <div class="set-section-title">排行榜來源網址</div>
         <div class="set-hint">留空則使用預設（ONE PIECE 熱門）。貼上其他 SNKRDUNK 搜尋網址可自訂來源。</div>
@@ -412,7 +380,6 @@ header h1{font-size:17px;font-weight:700}
         </div>
         <div class="set-status" id="rankUrlStatus"></div>
       </div>
-
       <div class="set-section">
         <div class="set-section-title">用戶識別碼</div>
         <div class="set-hint">每個人設定不同的識別碼，雲端資料就完全隔離。只要識別碼相同，同一人的多台裝置就能同步。</div>
@@ -422,7 +389,6 @@ header h1{font-size:17px;font-weight:700}
         </div>
         <div class="set-status" id="uidStatus"></div>
       </div>
-
       <div class="set-section">
         <div class="set-section-title">☁️ 跨裝置同步（Cloudflare KV）</div>
         <div class="how-box">
@@ -448,12 +414,10 @@ header h1{font-size:17px;font-weight:700}
         </div>
         <div class="set-status" id="cloudStatus"></div>
       </div>
-
       <button class="btn-cancel" onclick="hideSheet('setOverlay')">關閉</button>
     </div>
   </div>
 </div>
-
 <!-- ══ QUICK-ADD SHEET ══ -->
 <div class="overlay" id="qaOverlay" onclick="oClose(event,'qaOverlay')">
   <div class="sheet">
@@ -475,7 +439,6 @@ header h1{font-size:17px;font-weight:700}
     </div>
   </div>
 </div>
-
 <!-- ══ DELETE SHEET ══ -->
 <div class="overlay" id="delOverlay" onclick="oClose(event,'delOverlay')">
   <div class="sheet">
@@ -484,7 +447,6 @@ header h1{font-size:17px;font-weight:700}
     <div class="sheet-body" id="delSheetBody"></div>
   </div>
 </div>
-
 <div class="bottom-nav" id="bottomNav">
   <button class="bottom-nav-btn active" id="tabCollection" onclick="switchTab('collection')">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -495,9 +457,7 @@ header h1{font-size:17px;font-weight:700}
     <span class="bottom-nav-label">市場排行</span>
   </button>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 /* ════════════════════════════════════════
@@ -509,24 +469,20 @@ const STORE      = 'snkr_tracker_v5';
 const SERVER_KEY = 'snkr_server_url';
 const TWD_KEY    = 'snkr_twd_rate';
 const CLOUD_AT   = 'snkr_cloud_at';
-const UID_KEY    = 'snkr_user_id';   // 用戶識別碼，隔離多人資料
-const RANK_URL_KEY = 'snkr_rank_url'; // 排行榜來源網址
-
+const UID_KEY    = 'snkr_user_id';
+const RANK_URL_KEY = 'snkr_rank_url';
 /* ════════════════════════════════════════
    資料庫（localStorage）
 ════════════════════════════════════════ */
 let db = JSON.parse(localStorage.getItem(STORE) || '[]');
 let _cloudPushing = false;
-
 function save(){
   localStorage.setItem(STORE, JSON.stringify(db));
 }
-
 function saveAndPush(){
   save();
-  pushToCloud(true); // 靜默同步到雲端
+  pushToCloud(true);
 }
-
 /* ════════════════════════════════════════
    匯率
 ════════════════════════════════════════ */
@@ -538,7 +494,6 @@ const getCostTwd = c => {
   if(c.cost) return toTWD(Number(c.cost));
   return 0;
 };
-
 function saveTwdRate(){
   const v = parseFloat(document.getElementById('twdRateInput').value);
   const st = document.getElementById('twdStatus');
@@ -547,7 +502,6 @@ function saveTwdRate(){
   st.className='set-status'; st.textContent='✓ 已儲存 1 JPY = '+v+' TWD';
   renderAll();
 }
-
 /* ════════════════════════════════════════
    API 層
 ════════════════════════════════════════ */
@@ -557,20 +511,16 @@ function getApiBase(){
   if(location.protocol !== 'file:' && location.hostname !== '') return '/api';
   return 'http://localhost:8765/api';
 }
-
 function getWorkerBase(){
   const url = (localStorage.getItem(SERVER_KEY)||'').trim();
   return (url && url.includes('workers.dev')) ? url.replace(/\/$/,'') : null;
 }
-
 function getUid(){
   return (localStorage.getItem(UID_KEY)||'default').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,32) || 'default';
 }
-
 function kvUrl(endpoint){
   return getWorkerBase() + endpoint + '?uid=' + encodeURIComponent(getUid());
 }
-
 function serverLabel(){
   const custom = (localStorage.getItem(SERVER_KEY)||'').trim();
   if(custom){
@@ -581,9 +531,7 @@ function serverLabel(){
   if(location.protocol !== 'file:' && location.hostname !== '') return '本地代理 (Wi-Fi)';
   return 'localhost:8765';
 }
-
 let proxyOK = false;
-
 async function apiFetch(path){
   const url = getApiBase() + path;
   const controller = new AbortController();
@@ -595,7 +543,6 @@ async function apiFetch(path){
     return res.json();
   }catch(e){ clearTimeout(tid); throw e; }
 }
-
 async function checkProxy(){
   const banner = document.getElementById('connBanner');
   const txt    = document.getElementById('connText');
@@ -619,7 +566,6 @@ async function checkProxy(){
     if(mode) mode.textContent = '';
   }
 }
-
 /* ════════════════════════════════════════
    ☁️ 雲端同步（Cloudflare KV）
 ════════════════════════════════════════ */
@@ -634,7 +580,6 @@ function setCloudBtn(state){
   else if(state==='err'){ btn.classList.add('cloud-err'); btn.title='雲端同步失敗'; }
   else { btn.title='從雲端載入資料'; }
 }
-
 async function pushToCloud(silent=false){
   const base = getWorkerBase();
   if(!base || _cloudPushing) return;
@@ -659,7 +604,6 @@ async function pushToCloud(silent=false){
     if(csSt && !silent) { csSt.className='set-status err'; csSt.textContent='上傳失敗：'+e.message; }
   }finally{ _cloudPushing = false; }
 }
-
 async function syncFromCloud(){
   const base = getWorkerBase();
   if(!base){ toast('請先在設定中填入 Cloudflare Worker 網址'); return; }
@@ -670,7 +614,6 @@ async function syncFromCloud(){
     const res = await fetch(kvUrl('/db/get'));
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-
     let cloudCards = null, cloudSavedAt = 0;
     if(Array.isArray(data)){
       cloudCards = data; cloudSavedAt = 0;
@@ -678,21 +621,17 @@ async function syncFromCloud(){
       cloudCards = data.cards; cloudSavedAt = data.savedAt || 0;
     }
     if(!cloudCards) throw new Error('KV 未設定或格式錯誤，請確認 worker.js 已更新並綁定 DB');
-
-    /* 合併：以雲端為主，加入雲端沒有但本地有的卡片 */
     const cloudMap = new Map(cloudCards.map(c=>[c.id+'_'+c.condition, c]));
     const merged   = [...cloudCards];
     db.forEach(c=>{
       if(!cloudMap.has(c.id+'_'+c.condition)) merged.push(c);
     });
-
     const added = merged.length - db.length;
     db = merged;
     save();
     localStorage.setItem(CLOUD_AT, cloudSavedAt.toString());
     renderAll();
     setCloudBtn('ok');
-
     const msg = cloudCards.length === 0
       ? '☁️ 雲端目前無資料（請先在舊裝置點「⬆ 上傳到雲端」）'
       : added > 0
@@ -707,7 +646,6 @@ async function syncFromCloud(){
     if(csSt){ csSt.className='set-status err'; csSt.textContent=msg; }
   }
 }
-
 /* ════════════════════════════════════════
    設定 sheet
 ════════════════════════════════════════ */
@@ -718,10 +656,8 @@ function saveUid(){
   if(!val){ st.className='set-status err'; st.textContent='請輸入英數字識別碼'; return; }
   localStorage.setItem(UID_KEY, val);
   st.className='set-status'; st.textContent=`✓ 識別碼已儲存：${val}`;
-  // 清除本地同步時間戳，下次開啟會重新從雲端拉取此識別碼的資料
   localStorage.removeItem(CLOUD_AT);
 }
-
 function openSettings(){
   document.getElementById('serverUrlInput').value  = (localStorage.getItem(SERVER_KEY)||'').trim();
   document.getElementById('twdRateInput').value    = getTwdRate();
@@ -734,7 +670,6 @@ function openSettings(){
   document.getElementById('cloudStatus').textContent  = '';
   showSheet('setOverlay');
 }
-
 function saveRankUrl(){
   const val = document.getElementById('rankUrlInput').value.trim();
   const st  = document.getElementById('rankUrlStatus');
@@ -744,7 +679,6 @@ function saveRankUrl(){
   st.className='set-status'; st.textContent='✓ 已儲存，下次切換到市場排行時自動載入';
   updateRankSourceLabel();
 }
-
 function clearRankUrl(){
   localStorage.removeItem(RANK_URL_KEY);
   document.getElementById('rankUrlInput').value = '';
@@ -752,11 +686,7 @@ function clearRankUrl(){
   document.getElementById('rankUrlStatus').textContent='已清除';
   updateRankSourceLabel();
 }
-
-function updateRankSourceLabel(){
-  // 排行頁的 meta 文字由 scanRanking 執行後更新，此函式保留供相容
-}
-
+function updateRankSourceLabel(){}
 async function saveServerUrl(){
   const val = document.getElementById('serverUrlInput').value.trim();
   const st  = document.getElementById('setStatus');
@@ -773,7 +703,6 @@ async function saveServerUrl(){
     st.className='set-status err'; st.textContent='⚠️ 伺服器無回應，請確認網址或伺服器狀態';
   }
 }
-
 function clearServerUrl(){
   localStorage.removeItem(SERVER_KEY);
   document.getElementById('serverUrlInput').value = '';
@@ -782,26 +711,22 @@ function clearServerUrl(){
   setCloudBtn(null);
   checkProxy();
 }
-
 /* ════════════════════════════════════════
    取得商品完整資料
 ════════════════════════════════════════ */
 async function fetchCardData(id, condition){
   const PSA10_CONDITION = 'PSA10';
   const PSA10_CHART_ID  = 22;
-
   const [infoR, usedR, histR, chartR] = await Promise.allSettled([
     apiFetch(`/v1/apparels/${id}`),
     apiFetch(`/v1/apparels/${id}/used?perPage=50&page=1&sizeId=0&isSaleOnly=false`),
     apiFetch(`/v1/apparels/${id}/sales-history?size_id=0&page=1&per_page=20`),
     apiFetch(`/v1/apparels/${id}/sales-chart/used?range=oneMonth&salesChartOptionId=${PSA10_CHART_ID}`),
   ]);
-
   const info  = infoR.status  === 'fulfilled' ? infoR.value  : null;
   const used  = usedR.status  === 'fulfilled' ? usedR.value  : null;
   const hist  = histR.status  === 'fulfilled' ? histR.value  : null;
   const chart = chartR.status === 'fulfilled' ? chartR.value : null;
-
   const condMinMap = {};
   if(used?.apparelUsedItems){
     for(const it of used.apparelUsedItems){
@@ -812,14 +737,12 @@ async function fetchCardData(id, condition){
       }
     }
   }
-
   let currentPrice = null;
   let trades = [], tradesFallback = false;
   if(hist?.history?.length){
-    trades = hist.history.filter(h => h.condition === PSA10_CONDITION).slice(0,5);
+    trades = hist.history.filter(h => h.condition === PSA10_CONDITION).slice(0,20);
     if(trades.length) currentPrice = trades[0].price;
   }
-
   return {
     name:       info?.name ?? '商品名稱讀取失敗',
     nameEn:     info?.nameEn ?? info?.name_en ?? info?.englishName ?? '',
@@ -832,17 +755,14 @@ async function fetchCardData(id, condition){
     refreshedAt: Date.now(),
   };
 }
-
 /* ════════════════════════════════════════
    新增商品流程
 ════════════════════════════════════════ */
 let _fetched = null, _addId = '', _selCond = 'PSA10';
-
 function openAdd(){
   _fetched = null; _addId = ''; _selCond = 'PSA10';
   document.getElementById('urlInput').value = '';
   document.getElementById('urlErr').textContent = '';
-  // 預設今天
   document.getElementById('dateInput').value = new Date().toISOString().slice(0,10);
   document.getElementById('stepUrl').style.display    = '';
   document.getElementById('stepDetail').style.display = 'none';
@@ -864,16 +784,12 @@ function backToSearch(){
   document.getElementById('stepResults').style.display = 'none';
   document.getElementById('stepUrl').style.display     = '';
 }
-
-/* 統一入口：自動判斷是網址還是關鍵字 */
 async function doSearch(){
   const input = document.getElementById('urlInput').value.trim();
   const errEl = document.getElementById('urlErr');
   const btn   = document.getElementById('fetchBtn');
   errEl.textContent = '';
   if(!input){ errEl.textContent = '請輸入卡片編號或商品網址'; return; }
-
-  // 如果是網址 → 直接提取 ID
   const urlMatch = input.match(/apparels\/(\d+)/);
   if(urlMatch){
     _addId = urlMatch[1];
@@ -883,13 +799,10 @@ async function doSearch(){
     finally{ btn.innerHTML = '搜尋商品'; btn.disabled = false; }
     return;
   }
-
-  // 否則 → 搜尋
   btn.innerHTML = '<span class="bspin"></span>搜尋中...'; btn.disabled = true;
   try{
     const items = await searchProducts(input);
     if(!items.length){ errEl.textContent = '找不到相關商品，請確認編號格式（如 ST21-001）'; return; }
-
     document.getElementById('searchResultTitle').textContent = `搜尋結果（${items.length} 筆）`;
     document.getElementById('searchResultList').innerHTML = items.map(it=>`
       <div class="search-result-item" onclick="selectResult(${it.id})">
@@ -904,7 +817,6 @@ async function doSearch(){
         </div>
         <svg class="search-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>`).join('');
-
     document.getElementById('stepUrl').style.display     = 'none';
     document.getElementById('stepResults').style.display = '';
   }catch(e){
@@ -913,8 +825,6 @@ async function doSearch(){
     btn.innerHTML = '搜尋商品'; btn.disabled = false;
   }
 }
-
-/* 搜尋商品：抓搜尋頁 HTML → 解析 __NEXT_DATA__ → fallback 抽 ID + 批次取詳情 */
 async function searchProducts(keyword){
   const searchUrl = getApiBase() + `/search?keywords=${encodeURIComponent(keyword)}`;
   const controller = new AbortController();
@@ -925,8 +835,6 @@ async function searchProducts(keyword){
     clearTimeout(tid);
     html = await res.text();
   }catch(e){ clearTimeout(tid); throw new Error('無法連線到搜尋頁面：'+e.message); }
-
-  /* ① 嘗試從 __NEXT_DATA__ 取結構化資料 */
   const ndMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>(.+?)<\/script>/s);
   if(ndMatch){
     try{
@@ -940,25 +848,19 @@ async function searchProducts(keyword){
       if(products.length) return products.slice(0, 20);
     }catch(_){}
   }
-
-  /* ② fallback：從 HTML 抽 apparel ID → 批次查詳情 */
   const idSet = new Set();
   let m; const re = /\/apparels\/(\d+)/g;
   while((m = re.exec(html)) !== null) idSet.add(m[1]);
   const ids = [...idSet].slice(0, 12);
   if(!ids.length) return [];
-
   const results = await Promise.allSettled(ids.map(id => apiFetch(`/v1/apparels/${id}`)));
   return results
     .filter(r => r.status==='fulfilled' && r.value?.id && r.value?.name)
     .map(r => r.value);
 }
-
-/* 從搜尋結果點選某張卡 */
 async function selectResult(id){
   _addId = String(id);
   document.getElementById('stepResults').style.display = 'none';
-  // 顯示 stepDetail 並進入 loading 狀態
   document.getElementById('previewCard').innerHTML = '<div style="color:var(--t2);font-size:13px;padding:8px 0">載入中...</div>';
   document.getElementById('condGrid').innerHTML = '';
   document.getElementById('detailErr').textContent = '';
@@ -972,8 +874,6 @@ async function selectResult(id){
     document.getElementById('stepResults').style.display = '';
   }
 }
-
-/* 載入商品詳情並顯示 stepDetail */
 async function loadProductDetail(id){
   const [infoR, usedR] = await Promise.allSettled([
     apiFetch(`/v1/apparels/${id}`),
@@ -983,7 +883,6 @@ async function loadProductDetail(id){
   const usedData = usedR.status === 'fulfilled' ? usedR.value : null;
   if(!info?.name) throw new Error('無法取得商品資料');
   _fetched = { info, usedData };
-
   const nameEn = info.nameEn ?? info.name_en ?? info.englishName ?? '';
   document.getElementById('previewCard').innerHTML = `
     ${info.primaryMedia?.imageUrl ? `<img class="preview-img" src="${info.primaryMedia.imageUrl}" alt="">` : ''}
@@ -992,7 +891,6 @@ async function loadProductDetail(id){
       ${nameEn && nameEn !== info.name ? `<div style="font-size:11px;color:var(--t2);margin-top:3px">${nameEn}</div>` : ''}
       <div class="preview-sub">ID: ${id}</div>
     </div>`;
-
   const priceSet = new Set();
   if(usedData?.apparelUsedItems){
     for(const it of usedData.apparelUsedItems){
@@ -1003,20 +901,17 @@ async function loadProductDetail(id){
   document.getElementById('condGrid').innerHTML = CONDITIONS.map(c=>`
     <div class="cond-opt${c===_selCond?' sel':''}${priceSet.has(c)?' has-price':''}"
          onclick="pickCond('${c}',this)">${c}</div>`).join('');
-
   document.getElementById('detailErr').textContent = '';
   document.getElementById('costInput').value = '';
   document.getElementById('stepUrl').style.display     = 'none';
   document.getElementById('stepResults').style.display = 'none';
   document.getElementById('stepDetail').style.display  = '';
 }
-
 function pickCond(c, el){
   _selCond = c;
   document.querySelectorAll('#condGrid .cond-opt').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel');
 }
-
 async function confirmAdd(){
   const costTwd      = parseInt(document.getElementById('costInput').value) || 0;
   const purchaseDate = document.getElementById('dateInput').value || new Date().toISOString().slice(0,10);
@@ -1026,7 +921,6 @@ async function confirmAdd(){
   errEl.textContent = '';
   try{
     const data = await fetchCardData(_addId, _selCond);
-    // 每次永遠新增一筆獨立記錄（不合併）
     db.push({ id:_addId, condition:_selCond, costTwd, costCurrency:'TWD', purchaseDate, ...data });
     toast('已新增到收藏 ✓');
     saveAndPush(); closeAdd(); renderAll();
@@ -1036,7 +930,6 @@ async function confirmAdd(){
     btn.innerHTML = '新增到收藏'; btn.disabled = false;
   }
 }
-
 /* ════════════════════════════════════════
    全部更新
 ════════════════════════════════════════ */
@@ -1046,7 +939,6 @@ async function refreshAll(){
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning'); btn.disabled = true;
   let ok = 0;
-  // 同品項只打一次 API，結果套用到該品項的所有 db 記錄
   const groups = getGroups();
   await Promise.all(groups.map(async g => {
     try{
@@ -1061,13 +953,10 @@ async function refreshAll(){
   btn.classList.remove('spinning'); btn.disabled = false;
   toast(`已更新 ${ok}/${db.length} 張卡片 ✓`);
 }
-
 /* ════════════════════════════════════════
    渲染
 ════════════════════════════════════════ */
 let charts = {};
-
-/* 將 db 依 id+condition 分組，並依總市值由大到小排序 */
 function getGroups(){
   const map = new Map();
   db.forEach((c, dbIdx) => {
@@ -1083,12 +972,10 @@ function getGroups(){
     return bVal - aVal;
   });
 }
-
 function destroyAllCharts(){
   Object.values(charts).forEach(ch=>{ try{ ch.destroy(); }catch(_){} });
   charts = {};
 }
-
 function renderAll(){
   const list = document.getElementById('cardList');
   if(!db.length){
@@ -1106,7 +993,6 @@ function renderAll(){
   setTimeout(() => groups.forEach(g => initGroupChart(g)), 60);
   updateSummary();
 }
-
 const fmtJPY = n => n ? '¥'+Number(n).toLocaleString() : '–';
 const pOf    = (c,t) => (c-t)/t*100;
 const pStr   = p => (p>=0?'+':'')+p.toFixed(1)+'%';
@@ -1120,22 +1006,20 @@ function tsAgo(ts){
   if(s<86400) return Math.floor(s/3600)+'小時前';
   return Math.floor(s/86400)+'天前更新';
 }
-
-/* 將 group key 轉成 DOM-safe id */
 const safeId = key => key.replace(/[^a-zA-Z0-9]/g, '_');
-
 function groupHTML(g){
-  // 以最近更新的 entry 取卡片資訊（名稱、圖片、成交記錄等）
   const c = g.entries.reduce((best, e) =>
     (e.refreshedAt||0) > (best.refreshedAt||0) ? e : best, g.entries[0]);
-  const qty      = g.entries.length;
-  const avgCost  = Math.round(g.entries.reduce((s,e)=>s+(getCostTwd(e)||0),0) / qty);
-  const valueTwd = toTWD(c.currentPrice);
-  const hasPnl   = valueTwd && avgCost;
-  const p        = hasPnl ? pOf(valueTwd, avgCost) : null;
+  const qty          = g.entries.length;
+  const totalCostTwd = Math.round(g.entries.reduce((s,e)=>s+(getCostTwd(e)||0),0));
+  const avgCost      = Math.round(totalCostTwd / qty);
+  const valueTwd     = toTWD(c.currentPrice);
+  const hasPnl       = valueTwd && avgCost;
+  const p            = hasPnl ? pOf(valueTwd, avgCost) : null;
+  const totalValTwd  = valueTwd ? valueTwd * qty : null;
+  const totalDiff    = totalValTwd && totalCostTwd ? totalValTwd - totalCostTwd : null;
   const sid      = safeId(g.key);
-
-  let tradesHTML = c.trades?.length
+  const tradeItems = c.trades?.length
     ? c.trades.map(t=>`
         <div class="trade-row">
           <span class="trade-time">${t.date}</span>
@@ -1143,20 +1027,21 @@ function groupHTML(g){
           <span class="trade-price">${fmtTWD(toTWD(t.price))}</span>
         </div>`).join('') + (c.tradesFallback?`<div class="fallback-note">※ 無 PSA10 成交記錄</div>`:'')
     : `<div class="no-data">無成交記錄</div>`;
-
+  const tradesHTML = c.trades?.length > 4
+    ? `<div style="max-height:148px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+                   scrollbar-width:thin;scrollbar-color:var(--t3) transparent;
+                   padding-right:2px;margin-right:-2px">${tradeItems}</div>`
+    : tradeItems;
   return `
 <div class="card-item" id="cg_${sid}">
   <div class="card-top">
+    <!-- 左欄：圖片 -->
     <div class="card-img-box">
       ${c.imageUrl?`<img src="${c.imageUrl}" alt="" onerror="this.parentNode.innerHTML='<span style=font-size:28px>🃏</span>'">`:'<span style="font-size:28px">🃏</span>'}
     </div>
+    <!-- 右欄：數據 -->
     <div class="card-meta">
-      <div class="card-name">
-        <a class="card-name-link" href="https://snkrdunk.com/apparels/${c.id}" target="_blank" rel="noopener noreferrer">${c.name}</a>
-        <span class="card-title-badge">${c.condition}</span>
-      </div>
-      ${c.nameEn && c.nameEn !== c.name ? `<div class="card-name-en">${c.nameEn}</div>` : ''}
-      <div class="card-metrics">
+      <div class="card-metrics" style="margin-top:0">
         <div class="metric-row">
           <span class="metric-lbl">目前庫存</span>
           <span class="metric-val" style="display:flex;align-items:center;gap:7px">
@@ -1177,9 +1062,24 @@ function groupHTML(g){
           <span class="metric-lbl">目前漲幅</span>
           <span class="metric-val ${p!==null?pCls(p):'neu'}">${p!==null?pStr(p):'–'}</span>
         </div>
+        <div class="metric-row" style="border-top:.5px solid var(--border);padding-top:6px;margin-top:2px">
+          <span class="metric-lbl">總成本</span>
+          <span class="metric-val">${fmtTWD(totalCostTwd||null)}</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-lbl">總價差</span>
+          <span class="metric-val ${totalDiff!==null?pCls(totalDiff):'neu'}">${totalDiff!==null?(totalDiff>=0?'+':'-')+fmtTWD(Math.abs(totalDiff)):'–'}</span>
+        </div>
       </div>
     </div>
   </div>
+  <!-- 名稱橫條 -->
+  <div style="padding:8px 36px 8px 12px;border-top:.5px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    <a class="card-name-link" href="https://snkrdunk.com/apparels/${c.id}" target="_blank" rel="noopener noreferrer"
+       style="font-size:13px;font-weight:600;line-height:1.35;flex:1;min-width:0">${c.name}</a>
+    <span class="card-title-badge" style="flex-shrink:0">${c.condition}</span>
+  </div>
+  ${c.nameEn && c.nameEn !== c.name ? `<div style="padding:0 12px 8px;font-size:11px;color:var(--t2);line-height:1.3;margin-top:-4px">${c.nameEn}</div>` : ''}
   <div class="sec-wrap">
     <div class="sec-hd">近期成交（PSA10）</div>
     ${tradesHTML}
@@ -1192,7 +1092,6 @@ function groupHTML(g){
   <div class="refresh-stamp">更新於 ${tsAgo(c.refreshedAt)}</div>
 </div>`;
 }
-
 function initGroupChart(g){
   const c = g.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, g.entries[0]);
   if(!c?.chartPoints?.length) return;
@@ -1225,7 +1124,6 @@ function initGroupChart(g){
     }
   });
 }
-
 function updateSummary(){
   let cost=0,val=0,hasVal=false;
   db.forEach(c=>{
@@ -1238,33 +1136,76 @@ function updateSummary(){
   const el = document.getElementById('sumPnl');
   if(cost&&hasVal){ const p=pOf(val,cost); el.textContent=pStr(p); el.className='sum-val '+pCls(p); }
   else { el.textContent='–'; el.className='sum-val neu'; }
+  updatePriceAlerts();
   updateGainerLoser();
 }
-
+function updatePriceAlerts(){
+  const widget = document.getElementById('priceAlertWidget');
+  const cutoff = Date.now() - 12 * 3600 * 1000;
+  const alerts = [];
+  getGroups().forEach(g => {
+    const c = g.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, g.entries[0]);
+    if(!c.trades?.length) return;
+    const recent = c.trades.filter(t => {
+      const ts = parseRelativeDate(t.date);
+      return ts !== null && ts >= cutoff;
+    });
+    if(recent.length < 2) return;
+    const newest = recent[0];
+    const oldest = recent[recent.length - 1];
+    const chg = (newest.price - oldest.price) / oldest.price * 100;
+    if(Math.abs(chg) < 10) return;
+    alerts.push({ c, chg, newestPrice: toTWD(newest.price), count: recent.length });
+  });
+  if(!alerts.length){ widget.style.display='none'; return; }
+  alerts.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
+  widget.style.display='block';
+  widget.innerHTML = `
+    <div style="background:${alerts.some(a=>a.chg<0)?'var(--red-bg)':'var(--acc-bg)'};border-radius:var(--r);border:.5px solid ${alerts.some(a=>a.chg<0)?'var(--red)':'var(--acc)'};padding:10px 12px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.4px;color:${alerts.some(a=>a.chg<0)?'var(--red)':'var(--acc)'};margin-bottom:8px">
+        ⚠️ 12H 價格異常警示
+      </div>
+      ${alerts.map(a=>{
+        const cls = a.chg>=0?'var(--green)':'var(--red)';
+        const sign = a.chg>=0?'+':'';
+        const icon = a.chg>=0?'🚀':'📉';
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:.5px solid var(--border)">
+          ${a.c.imageUrl
+            ?`<div style="width:56px;height:56px;border-radius:8px;background:var(--bg);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center">
+                <img src="${a.c.imageUrl}" style="width:100%;height:100%;object-fit:contain;transform:scale(1.7);transform-origin:center">
+              </div>`
+            :`<div style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🃏</div>`}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.c.name}</div>
+            <div style="font-size:10px;color:var(--t2);margin-top:1px">${a.c.condition} · 12h內 ${a.count} 筆成交</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:14px;font-weight:800;color:${cls}">${icon} ${sign}${a.chg.toFixed(1)}%</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:1px">${fmtTWD(a.newestPrice)}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
 function updateGainerLoser(){
   const widget = document.getElementById('glWidget');
   const groups = getGroups();
-
-  // 每個 group 計算漲跌幅
   const withPnl = groups.map(g => {
     const rep = g.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, g.entries[0]);
     const valueTwd = toTWD(rep.currentPrice);
     const totalCost = g.entries.reduce((s,e)=>s+getCostTwd(e),0);
     const avgCost = totalCost / g.entries.length;
     if(!valueTwd || !avgCost) return null;
-    const diff = valueTwd - avgCost;   // 每張市值價差
+    const diff = valueTwd - avgCost;
     const pct  = diff / avgCost * 100;
     return { rep, diff, pct };
   }).filter(Boolean);
-
   if(withPnl.length < 1){ widget.style.display='none'; return; }
   widget.style.display='grid';
-
   withPnl.sort((a,b)=>b.pct - a.pct);
   renderGLCard('glGainer', withPnl[0]);
   renderGLCard('glLoser',  withPnl[withPnl.length-1]);
 }
-
 function renderGLCard(id, item){
   const el = document.getElementById(id);
   if(!item){ el.innerHTML='<div style="color:var(--t2);font-size:11px;text-align:center">–</div>'; return; }
@@ -1274,16 +1215,13 @@ function renderGLCard(id, item){
   el.innerHTML = `
     <div style="text-align:center">
       ${rep.imageUrl
-        ? `<img src="${rep.imageUrl}" style="width:100%;height:120px;object-fit:contain;border-radius:8px;display:block;margin:0 auto 8px">`
-        : `<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 8px">🃏</div>`}
-      <div class="${cls}" style="font-size:14px;font-weight:700;line-height:1.2">${pStr(pct)}</div>
-      <div class="${cls}" style="font-size:11px;font-weight:600;margin-top:2px">${sign}${fmtTWD(Math.round(Math.abs(diff)))}</div>
+        ? `<img src="${rep.imageUrl}" style="width:100%;height:120px;object-fit:contain;border-radius:8px;display:block;margin:0 auto 3px">`
+        : `<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 3px">🃏</div>`}
+      <div class="${cls}" style="font-size:12px;font-weight:700;margin-top:0">${pStr(pct)} / ${sign}${fmtTWD(Math.round(Math.abs(diff)))}</div>
     </div>`;
 }
-
-/* ── 快速新增（直接沿用現有卡片資料，只輸入成本+日期）── */
+/* ── 快速新增 ── */
 let _qaGKey = null;
-
 function openQuickAdd(gKey){
   _qaGKey = gKey;
   const group = getGroups().find(g => g.key === gKey);
@@ -1295,7 +1233,6 @@ function openQuickAdd(gKey){
   showSheet('qaOverlay');
   setTimeout(()=>document.getElementById('qaCostInput').focus(), 350);
 }
-
 async function confirmQuickAdd(){
   if(!_qaGKey) return;
   const costTwd      = parseInt(document.getElementById('qaCostInput').value) || 0;
@@ -1306,7 +1243,6 @@ async function confirmQuickAdd(){
     const group = getGroups().find(g => g.key === _qaGKey);
     if(!group) throw new Error('找不到此品項');
     const rep = group.entries.reduce((best,e)=>(e.refreshedAt||0)>(best.refreshedAt||0)?e:best, group.entries[0]);
-    // 複製最新資料，只覆蓋成本與日期（_dbIdx 是 getGroups 暫時欄位，不存入）
     const { _dbIdx, ...cardData } = rep;
     db.push({ ...cardData, costTwd, costCurrency:'TWD', purchaseDate });
     saveAndPush();
@@ -1319,7 +1255,6 @@ async function confirmQuickAdd(){
     btn.disabled = false; btn.innerHTML = '新增一張';
   }
 }
-
 function openDeleteSheet(gKey){
   const group = getGroups().find(g => g.key === gKey);
   if(!group) return;
@@ -1348,7 +1283,6 @@ function openDeleteSheet(gKey){
     <button class="btn-cancel" onclick="hideSheet('delOverlay')">取消</button>`;
   showSheet('delOverlay');
 }
-
 function confirmDelEntry(dbIdx){
   if(dbIdx < 0 || dbIdx >= db.length){ toast('找不到記錄'); hideSheet('delOverlay'); return; }
   const c = db[dbIdx];
@@ -1358,21 +1292,17 @@ function confirmDelEntry(dbIdx){
   hideSheet('delOverlay');
   toast('已刪除'); renderAll();
 }
-
 function showSheet(id){ const o=document.getElementById(id); o.style.display='flex'; requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('open'))); }
 function hideSheet(id){ const o=document.getElementById(id); o.classList.remove('open'); setTimeout(()=>o.style.display='none',300); }
 function oClose(e,id){ if(e.target===e.currentTarget) hideSheet(id); }
-
 function toast(msg,ms=2400){
   const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),ms);
 }
-
 /* ════════════════════════════════════════
    分頁切換
 ════════════════════════════════════════ */
-let _rankLoaded = false; // 本次 session 是否已載入過
-
+let _rankLoaded = false;
 function switchTab(tab){
   const isCol = tab === 'collection';
   document.getElementById('pageCollection').style.display = isCol ? '' : 'none';
@@ -1380,28 +1310,38 @@ function switchTab(tab){
   document.getElementById('tabCollection').classList.toggle('active', isCol);
   document.getElementById('tabRanking').classList.toggle('active', !isCol);
   document.getElementById('fabBtn').style.display = isCol ? '' : 'none';
-
   if(!isCol){
     updateRankSourceLabel();
-    // 切換到排行分頁時，若尚未載入且有來源 URL，自動掃描
     if(!_rankLoaded && localStorage.getItem(RANK_URL_KEY)){
       _rankLoaded = true;
       scanRanking();
     }
   }
 }
-
 /* ════════════════════════════════════════
-   市場排行（SNKRDUNK 推薦順序，page 1–5）
+   市場排行
 ════════════════════════════════════════ */
-const DEFAULT_RANK_URL = 'https://snkrdunk.com/search?keywords=ONE+PIECE+%E3%83%88%E3%83%AC%E3%82%AB+%28%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%89%29&searchCategoryIds=6%2F33&brandIds=onepiece&sort=hottest&page=1';
-
+const DEFAULT_RANK_URL  = 'https://snkrdunk.com/search?keywords=ONE+PIECE+%E3%83%88%E3%83%AC%E3%82%AB+%28%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%89%29&searchCategoryIds=6%2F33&brandIds=onepiece&sort=hottest&page=1';
+const POKEMON_RANK_URL  = 'https://snkrdunk.com/search?keywords=Pokemon+Card+Game+%E3%83%88%E3%83%AC%E3%82%AB+%28%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%89%29&searchCategoryIds=6%2F33&brandIds=pokemon&sort=hottest&page=1';
+const RANK_CATEGORIES = {
+  onepiece: { url: DEFAULT_RANK_URL,  label: 'ONE PIECE 熱門排行' },
+  pokemon:  { url: POKEMON_RANK_URL,  label: 'Pokémon 熱門排行'   },
+};
+let _rankCategory = 'onepiece';
+function switchRankCategory(cat){
+  if(_rankCategory === cat) return;
+  _rankCategory = cat;
+  ['onepiece','pokemon'].forEach(c => {
+    const btn = document.getElementById('rankTab' + c.charAt(0).toUpperCase() + c.slice(1));
+    if(btn) btn.classList.toggle('active', c === cat);
+  });
+  scanRanking();
+}
 function getRankBaseUrl(){
+  if(RANK_CATEGORIES[_rankCategory]) return RANK_CATEGORIES[_rankCategory].url;
   const saved = (localStorage.getItem(RANK_URL_KEY)||'').trim();
   return saved || DEFAULT_RANK_URL;
 }
-
-/* 抓單一頁面的商品清單 */
 async function fetchRankPage(path){
   const url  = getApiBase() + path;
   const ctrl = new AbortController();
@@ -1410,8 +1350,6 @@ async function fetchRankPage(path){
     const res  = await fetch(url, { signal: ctrl.signal });
     clearTimeout(tid);
     const html = await res.text();
-
-    // 優先解析 __NEXT_DATA__
     const ndMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>(.+?)<\/script>/s);
     if(ndMatch){
       try{
@@ -1422,7 +1360,6 @@ async function fetchRankPage(path){
         if(list.length) return list;
       }catch(_){}
     }
-    // fallback：抽 ID 再批次取詳情
     const idSet = new Set();
     let m; const re = /\/apparels\/(\d+)/g;
     while((m = re.exec(html)) !== null) idSet.add(m[1]);
@@ -1432,84 +1369,58 @@ async function fetchRankPage(path){
     return rs.filter(r=>r.status==='fulfilled'&&r.value?.id).map(r=>r.value);
   }catch(e){ clearTimeout(tid); return []; }
 }
-
 let _rankData = [];
-
-/* ── PSA10 判斷：容忍各種 condition 欄位名稱與大小寫 ── */
 function isPSA10(t){
   const v = t.condition ?? t.conditionTitle ?? t.grade ?? t.gradeTitle
               ?? t.conditionName ?? t.saleCondition ?? '';
   return String(v).toUpperCase().replace(/\s/g,'') === 'PSA10';
 }
-
-/* ── 日本語相対時間文字列 → ms タイムスタンプ（例: "2時間前" → Date.now()-7200000）── */
 function parseRelativeDate(raw){
   if(raw == null) return null;
   const s = String(raw).trim();
-
-  // たった今 / 今
   if(/^(たった今|今)$/.test(s)) return Date.now();
-
   let m;
-  // X分前
   m = s.match(/^(\d+)\s*分前$/);
   if(m) return Date.now() - parseInt(m[1]) * 60 * 1000;
-  // X時間前
   m = s.match(/^(\d+)\s*時間前$/);
   if(m) return Date.now() - parseInt(m[1]) * 3600 * 1000;
-  // X日前
   m = s.match(/^(\d+)\s*日前$/);
   if(m) return Date.now() - parseInt(m[1]) * 86400 * 1000;
-  // X週間前 / X週前
   m = s.match(/^(\d+)\s*週間?前$/);
   if(m) return Date.now() - parseInt(m[1]) * 7 * 86400 * 1000;
-  // Xヶ月前 / Xか月前
   m = s.match(/^(\d+)\s*[ヶか]月前$/);
   if(m) return Date.now() - parseInt(m[1]) * 30 * 86400 * 1000;
-  // X年前
   m = s.match(/^(\d+)\s*年前$/);
   if(m) return Date.now() - parseInt(m[1]) * 365 * 86400 * 1000;
-
-  // fallback: Unix 秒・ミリ秒・ISO 文字列
   const n = Number(s);
   if(!isNaN(n) && n > 1e9  && n < 2e10)  return n * 1000;
   if(!isNaN(n) && n > 1e12 && n < 2e13)  return n;
   const d = new Date(s.replace(/\//g,'-'));
   return isNaN(d.getTime()) ? null : d.getTime();
 }
-
-/* ── 成交金額取得 ── */
 function tradePrice(t){
   return t.price ?? t.salePrice ?? t.amount ?? t.soldPrice ?? t.saleAmount ?? null;
 }
-
-/* ── 成交記錄の date フィールドをタイムスタンプへ ── */
 function tradeDateOf(t){
   return parseRelativeDate(
     t.date ?? t.soldAt ?? t.createdAt ?? t.tradedAt
       ?? t.transactionDate ?? t.saleDate ?? t.purchasedAt
   );
 }
-
 async function scanRanking(){
   const btn  = document.getElementById('rankScanBtn');
   const list = document.getElementById('rankList');
   const meta = document.getElementById('rankMeta');
   if(!proxyOK){ toast('請先確認伺服器連線'); return; }
-
   btn.disabled = true; btn.textContent = '載入中...';
   list.innerHTML = '<div class="rank-loading">讀取榜單 page 1–5...</div>';
-
   try{
     const base = new URL(getRankBaseUrl());
     base.searchParams.delete('page');
     const basePath = base.pathname + base.search;
-
-    /* ① 同時抓 5 頁商品清單 */
     const pageResults = await Promise.allSettled(
       [1,2,3,4,5].map(p => fetchRankPage(basePath + '&page=' + p))
     );
-
     const seen = new Set();
     _rankData = [];
     for(const r of pageResults){
@@ -1529,39 +1440,24 @@ async function scanRanking(){
         });
       }
     }
-
     if(!_rankData.length){
       list.innerHTML = '<div class="rank-empty">無法讀取資料，請確認伺服器連線</div>';
       return;
     }
-
-    if(meta) meta.textContent = `ONE PIECE 熱門排行・共 ${_rankData.length} 筆`;
+    if(meta) meta.textContent = `${RANK_CATEGORIES[_rankCategory]?.label ?? '熱門排行'}・共 ${_rankData.length} 筆`;
     list.innerHTML = `<div class="rank-loading">找到 ${_rankData.length} 筆，抓取成交資料...</div>`;
-
     const cutoff6h = Date.now() - 24 * 3600 * 1000;
-
-    /* ② 平行抓每個品項的成交歷史 */
     await Promise.allSettled(_rankData.map(async (item, idx) => {
       try{
         const hist = await apiFetch(`/v1/apparels/${item.id}/sales-history?size_id=0&page=1&per_page=50`);
-
-        // 容忍各種頂層欄位名
         const all = hist?.history ?? hist?.salesHistory ?? hist?.data?.history
                     ?? hist?.data ?? (Array.isArray(hist) ? hist : []);
-
-        // PSA10 篩選
         const psa10 = all.filter(t => isPSA10(t));
-
-        // 6h 以内の成交（"2時間前" 等の相対時間 → タイムスタンプ変換で判定）
         const recent = psa10.filter(t => {
           const ts = tradeDateOf(t);
           return ts !== null && ts >= cutoff6h;
         });
-
         item.volume6h = recent.length;
-
-        // 漲跌幅：6h内 ≥2 筆 → 最新 vs 最舊
-        //         6h内 1 筆  → vs 6h外第一筆 PSA10
         if(recent.length >= 2){
           const newest = tradePrice(recent[0]);
           const oldest = tradePrice(recent[recent.length - 1]);
@@ -1575,42 +1471,28 @@ async function scanRanking(){
           const p = prev ? tradePrice(prev) : null;
           if(p) item.change6h = (newest - p) / p * 100;
         }
-
-        // 最新 PSA10 成交價
         if(psa10.length) item.latestPrice = tradePrice(psa10[0]);
-
       }catch(e){}
     }));
-
     renderRanking(_rankData);
-
   }catch(e){
     list.innerHTML = `<div class="rank-empty">載入失敗：${e.message}</div>`;
   }finally{
     btn.disabled = false; btn.textContent = '↺ 重新整理';
   }
 }
-
 function renderRanking(data){
   const list = document.getElementById('rankList');
   if(!data.length){ list.innerHTML = '<div class="rank-empty">沒有資料</div>'; return; }
-
   list.innerHTML = data.map((item, i) => {
     const isTop  = i < 3;
     const inDB   = db.some(c => c.id === item.id);
-
-    // 6h内 PSA10 成交量
     const volTxt = item.volume6h !== null
       ? `${item.volume6h > 0 ? '🔥 ' : ''}${item.volume6h} 筆`
       : '–';
-
-    // 漲跌幅
     const chgTxt = item.change6h !== null ? pStr(item.change6h) : '–';
     const chgCls = item.change6h !== null ? pCls(item.change6h) : '';
-
-    // 最新 PSA10 成交價（TWD）
     const priceTxt = item.latestPrice ? fmtTWD(toTWD(item.latestPrice)) : '–';
-
     return `
 <div class="rank-item" onclick="window.open('https://snkrdunk.com/apparels/${item.id}','_blank')">
   <span class="rank-num${isTop?' top':''}">${i+1}</span>
@@ -1645,21 +1527,18 @@ function renderRanking(data){
 </div>`;
   }).join('');
 }
-
 async function addFromRanking(id){
   switchTab('collection');
   openAdd();
   document.getElementById('urlInput').value = `https://snkrdunk.com/apparels/${id}`;
   await doSearch();
 }
-
 /* ════════════════════════════════════════
    啟動
 ════════════════════════════════════════ */
 setCloudBtn(getWorkerBase() ? 'ok' : null);
 updateRankSourceLabel();
 checkProxy().then(()=>{
-  // 連線成功後，自動從雲端同步（靜默）
   if(getWorkerBase()){
     syncFromCloud().catch(()=>{});
   }
