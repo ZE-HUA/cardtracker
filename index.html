@@ -241,8 +241,8 @@ header h1{font-size:17px;font-weight:700}
 .rank-item:active{opacity:.5}
 .rank-num{font-size:15px;font-weight:800;width:22px;text-align:center;flex-shrink:0;color:var(--t2)}
 .rank-num.top{color:var(--acc)}
-.rank-thumb-wrap{width:80px;height:100px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.rank-thumb{width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
+.rank-thumb-wrap{width:52px;height:52px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.rank-thumb{width:100%;height:100%;object-fit:contain;transform:scale(1.6);transform-origin:center}
 .rank-info{flex:1;min-width:0}
 .rank-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:4px}
 .rank-metrics{font-size:11px;color:var(--t2);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
@@ -291,11 +291,11 @@ header h1{font-size:17px;font-weight:700}
 <!-- 最漲 / 最跌 警示 -->
 <div id="glWidget" style="display:none;margin:0 12px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
   <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
-    <div style="font-size:15px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">🚀 最漲</div>
+    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">🚀 最漲</div>
     <div id="glGainer"></div>
   </div>
   <div style="background:var(--card);border-radius:var(--r);border:.5px solid var(--border);padding:10px 8px">
-    <div style="font-size:15px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">💩 最跌</div>
+    <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:.3px">📉 最跌</div>
     <div id="glLoser"></div>
   </div>
 </div>
@@ -1623,8 +1623,8 @@ function renderRanking(data){
     <div class="rank-name">${item.name}</div>
     ${item.nameEn && item.nameEn !== item.name
       ? `<div style="font-size:10px;color:var(--t2);margin-bottom:3px">${item.nameEn}</div>` : ''}
-    <div class="rank-metrics" style="flex-direction:column;align-items:flex-start;gap:3px">
-      <div style="display:flex;align-items:center;gap:5px">
+    <div class="rank-metrics" style="display:block">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
         <span style="font-size:10px;font-weight:700;background:var(--acc-bg);color:var(--acc-t);padding:1px 5px;border-radius:4px;white-space:nowrap">PSA10 24h</span>
         <span style="color:var(--t2);font-size:10px">成交</span>
         <span style="font-weight:600;font-size:12px">${volTxt}</span>
@@ -1637,6 +1637,7 @@ function renderRanking(data){
         <span style="font-weight:600;font-size:12px">${priceTxt}</span>
       </div>
     </div>
+  </div>
   <button class="rank-add-btn" title="${inDB?'已在收藏':'加入收藏'}"
     onclick="event.stopPropagation();addFromRanking('${item.id}')">
     ${inDB ? '✓' : '+'}
