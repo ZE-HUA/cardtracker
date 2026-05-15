@@ -1086,7 +1086,7 @@ function groupHTML(g){
   </div>
   ${c.chartPoints?.length?`
   <div class="sec-wrap">
-    <div class="sec-hd">PSA10 一個月走勢</div>
+    <div class="sec-hd">PSA10 一個月走勢 <span style="font-size:9px;color:var(--t2);font-weight:400;letter-spacing:0">（紅虛線為平均成本水位）</span></div>
     <div class="chart-wrap"><canvas id="ch_${sid}" role="img" aria-label="價格走勢"></canvas></div>
   </div>`:''}
   <div class="refresh-stamp">更新於 ${tsAgo(c.refreshedAt)}</div>
@@ -1099,23 +1099,44 @@ function initGroupChart(g){
   const el  = document.getElementById('ch_'+sid); if(!el) return;
   if(charts[g.key]) charts[g.key].destroy();
   const dark = matchMedia('(prefers-color-scheme:dark)').matches;
+  const avgCost = Math.round(g.entries.reduce((s,e)=>s+(getCostTwd(e)||0),0) / g.entries.length);
+  const labels  = c.chartPoints.map(([ts])=>{ const d=new Date(ts); return (d.getMonth()+1)+'/'+(d.getDate()) });
+  const datasets = [
+    {
+      label:'市場價格',
+      data: c.chartPoints.map(([,v])=>toTWD(v)),
+      borderColor:'#534AB7',
+      backgroundColor: dark?'rgba(83,74,183,.12)':'rgba(83,74,183,.07)',
+      fill:false,tension:0,pointRadius:0,borderWidth:1.5,
+    }
+  ];
+  if(avgCost){
+    datasets.push({
+      label:'平均成本',
+      data: labels.map(()=>avgCost),
+      borderColor: dark?'rgba(240,149,149,.85)':'rgba(216,90,48,.75)',
+      borderWidth:1.5,
+      borderDash:[5,4],
+      pointRadius:0,
+      fill:false,
+      tension:0,
+    });
+  }
   charts[g.key] = new Chart(el,{
     type:'line',
-    data:{
-      labels: c.chartPoints.map(([ts])=>{ const d=new Date(ts); return (d.getMonth()+1)+'/'+(d.getDate()) }),
-      datasets:[{
-        data: c.chartPoints.map(([,v])=>toTWD(v)),
-        borderColor:'#534AB7',
-        backgroundColor: dark?'rgba(83,74,183,.12)':'rgba(83,74,183,.07)',
-        fill:false,tension:0,pointRadius:0,borderWidth:1.5
-      }]
-    },
+    data:{ labels, datasets },
     options:{
       responsive:true,maintainAspectRatio:false,animation:false,
       layout:{padding:{top:4,right:6,bottom:0,left:0}},
       plugins:{
         legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>fmtTWD(ctx.parsed.y)}}
+        tooltip:{
+          callbacks:{
+            label:ctx=> ctx.dataset.label==='平均成本'
+              ? `平均成本 ${fmtTWD(ctx.parsed.y)}`
+              : fmtTWD(ctx.parsed.y)
+          }
+        }
       },
       scales:{
         x:{display:true,ticks:{color:'#8E8E93',font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:5},grid:{display:false,drawBorder:false}},
