@@ -1560,10 +1560,10 @@ function lpRenderList(){
     <div class="search-result-list" style="max-height:none">
       ${_lpSearchResults.map((p,i)=>`
       <div class="search-result-item" onclick="showLPDetail(${i})">
-        <div class="search-result-thumb-wrap">
+        <div class="rank-thumb-wrap">
           ${p.imageUrl
-            ?`<img class="search-result-thumb" src="${p.imageUrl}" alt="" onerror="this.style.display='none'">`
-            :`<span style="font-size:22px">🃏</span>`}
+            ?`<img class="rank-thumb" src="${p.imageUrl}" alt="" onerror="this.style.display='none'">`
+            :`<span style="font-size:28px">🃏</span>`}
         </div>
         <div class="search-result-info">
           <div class="search-result-name">${p.name}</div>
