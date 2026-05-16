@@ -194,9 +194,32 @@ header h1{font-size:17px;font-weight:700}
 /* ── 底部分頁導航 ── */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:85;
   background:var(--card);border-top:.5px solid var(--border);
-  display:grid;grid-template-columns:1fr 1fr;
+  display:grid;grid-template-columns:1fr 1fr 1fr;
   padding-bottom:var(--sb);
   -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+/* ── 查價頁面 ── */
+.lp-header{padding:12px 12px 8px;display:flex;gap:8px}
+.lp-input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none}
+.lp-input:focus{border-color:var(--acc)}
+.lp-btn{padding:10px 16px;background:var(--acc);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.lp-btn:disabled{opacity:.5}
+.lp-list{padding:0 12px;display:flex;flex-direction:column;gap:12px}
+.lp-card{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);overflow:hidden}
+.lp-card-top{display:flex;gap:0;align-items:stretch}
+.lp-img-box{flex-shrink:0;width:100px;min-height:120px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lp-img-box img{width:100%;height:100%;object-fit:cover}
+.lp-metrics{flex:1;min-width:0;padding:10px 10px 10px 12px;display:flex;flex-direction:column;gap:0}
+.lp-name{font-size:13px;font-weight:700;line-height:1.35;margin-bottom:6px}
+.lp-name a{color:var(--text);text-decoration:none}
+.lp-name a:active{opacity:.55}
+.lp-grid{display:grid;grid-template-columns:minmax(0,1fr) max-content;row-gap:5px;column-gap:8px}
+.lp-lbl{font-size:10px;color:var(--t2);font-weight:700;align-self:baseline;white-space:nowrap}
+.lp-val{font-size:12px;font-weight:700;text-align:right;align-self:baseline;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lp-add-btn{margin:8px 10px 0;padding:7px;width:calc(100% - 20px);background:var(--acc-bg);color:var(--acc-t);border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.lp-add-btn:active{opacity:.5}
+.lp-trades-wrap{border-top:.5px solid var(--border);padding:8px 12px 4px}
+.lp-trades-hd{font-size:10px;color:var(--t2);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.lp-empty{text-align:center;padding:40px 24px;color:var(--t2);font-size:14px}
 .bottom-nav-btn{padding:10px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;
   background:none;border:none;cursor:pointer;color:var(--t2);transition:color .15s}
 .bottom-nav-btn.active{color:var(--acc)}
@@ -285,6 +308,17 @@ header h1{font-size:17px;font-weight:700}
   </div>
   <div id="rankList" class="rank-list">
     <div class="rank-empty">載入中...</div>
+  </div>
+</div>
+<!-- 查價系統 -->
+<div id="pageSearch" style="display:none">
+  <div class="lp-header">
+    <input class="lp-input" id="lpInput" type="search" placeholder="輸入關鍵字，例如 Charizard SAR"
+      onkeydown="if(event.key==='Enter')lookupPrice()">
+    <button class="lp-btn" id="lpBtn" onclick="lookupPrice()">搜尋</button>
+  </div>
+  <div id="lpList" class="lp-list">
+    <div class="lp-empty" style="color:var(--t3);font-size:13px">輸入關鍵字開始查詢</div>
   </div>
 </div>
 <button class="fab" id="fabBtn" onclick="openAdd()">
@@ -455,6 +489,10 @@ header h1{font-size:17px;font-weight:700}
   <button class="bottom-nav-btn" id="tabRanking" onclick="switchTab('ranking')">
     <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
     <span class="bottom-nav-label">市場排行</span>
+  </button>
+  <button class="bottom-nav-btn" id="tabSearch" onclick="switchTab('search')">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span class="bottom-nav-label">查價系統</span>
   </button>
 </div>
 <div class="toast" id="toast"></div>
@@ -1325,19 +1363,227 @@ function toast(msg,ms=2400){
 ════════════════════════════════════════ */
 let _rankLoaded = false;
 function switchTab(tab){
-  const isCol = tab === 'collection';
-  document.getElementById('pageCollection').style.display = isCol ? '' : 'none';
-  document.getElementById('pageRanking').style.display    = isCol ? 'none' : '';
-  document.getElementById('tabCollection').classList.toggle('active', isCol);
-  document.getElementById('tabRanking').classList.toggle('active', !isCol);
-  document.getElementById('fabBtn').style.display = isCol ? '' : 'none';
-  if(!isCol){
+  ['collection','ranking','search'].forEach(t=>{
+    const page = document.getElementById('page'+t.charAt(0).toUpperCase()+t.slice(1));
+    const btn  = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(page) page.style.display = t===tab ? '' : 'none';
+    if(btn)  btn.classList.toggle('active', t===tab);
+  });
+  document.getElementById('fabBtn').style.display = tab==='collection' ? '' : 'none';
+  if(tab==='ranking'){
     updateRankSourceLabel();
     if(!_rankLoaded && localStorage.getItem(RANK_URL_KEY)){
       _rankLoaded = true;
       scanRanking();
     }
   }
+  if(tab==='search'){
+    setTimeout(()=>document.getElementById('lpInput')?.focus(), 200);
+  }
+}
+/* ════════════════════════════════════════
+   查價系統
+════════════════════════════════════════ */
+/* ── Step 1：關鍵字搜尋，顯示選擇清單 ── */
+let _lpSearchResults = [];
+async function lookupPrice(){
+  const kw = document.getElementById('lpInput').value.trim();
+  if(!kw) return;
+  if(!proxyOK){ toast('請先確認伺服器連線'); return; }
+  const btn  = document.getElementById('lpBtn');
+  const list = document.getElementById('lpList');
+  btn.disabled = true; btn.textContent = '搜尋中...';
+  list.innerHTML = '<div class="lp-empty">搜尋中...</div>';
+  try{
+    const products = await searchProducts(kw);
+    if(!products.length){ list.innerHTML='<div class="lp-empty">找不到相關商品</div>'; return; }
+    _lpSearchResults = products.slice(0,30).map(p=>({
+      id:       String(p.id),
+      name:     p.name,
+      nameEn:   p.nameEn??p.name_en??'',
+      imageUrl: p.primaryMedia?.imageUrl??p.imageUrl??'',
+    }));
+    lpRenderList();
+  }catch(e){
+    list.innerHTML=`<div class="lp-empty">搜尋失敗：${e.message}</div>`;
+  }finally{
+    btn.disabled=false; btn.textContent='搜尋';
+  }
+}
+/* ── Step 2：選取後顯示詳細資訊 ── */
+async function showLPDetail(idx){
+  const p    = _lpSearchResults[idx];
+  const list = document.getElementById('lpList');
+  list.innerHTML = `
+    <button onclick="lpBack()" style="display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--acc);font-size:14px;font-weight:600;cursor:pointer;padding:0 2px 12px">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      返回結果
+    </button>
+    <div class="lp-empty" style="padding:20px 0">載入中...</div>`;
+  try{
+    const cutoff24h = Date.now() - 24*3600*1000;
+    const [detail, hist, chart, pageRes] = await Promise.allSettled([
+      apiFetch(`/v1/apparels/${p.id}`),
+      apiFetch(`/v1/apparels/${p.id}/sales-history?size_id=0&page=1&per_page=50`),
+      apiFetch(`/v1/apparels/${p.id}/sales-chart/used?range=oneMonth&salesChartOptionId=22`),
+      fetch(getApiBase() + `/apparels/${p.id}`).then(r=>r.text()),
+    ]);
+    const info = detail.status==='fulfilled' ? detail.value : {};
+    /* 收錄商品：group-items endpoint */
+    let packs = [], packsTitle = '收錄於以下商品';
+    try{
+      const gi = await apiFetch(`/v1/apparels/${p.id}/group-items?page=1&perPage=10`);
+      if(gi?.apparels?.length){
+        packs = gi.apparels;
+        if(gi.apparelGroupTitle) packsTitle = gi.apparelGroupTitle
+          .replace('このカードが入っている','收錄於：')
+          .replace('ボックス','箱')
+          .replace('パック','包');
+      }
+    }catch(_){}
+    const all  = (()=>{
+      if(hist.status!=='fulfilled') return [];
+      const h=hist.value;
+      return h?.history??h?.salesHistory??h?.data?.history??h?.data??(Array.isArray(h)?h:[]);
+    })();
+    const psa10   = all.filter(t=>isPSA10(t));
+    const recent  = psa10.filter(t=>{const ts=tradeDateOf(t);return ts!==null&&ts>=cutoff24h;});
+    const latestP = psa10.length ? toTWD(tradePrice(psa10[0])) : null;
+    let change24h = null;
+    if(recent.length>=2){ const np=tradePrice(recent[0]),op=tradePrice(recent[recent.length-1]); if(op) change24h=(np-op)/op*100; }
+    else if(recent.length===1){ const prev=psa10.find(t=>{const ts=tradeDateOf(t);return ts!==null&&ts<cutoff24h;}); if(prev){const np=tradePrice(recent[0]),op=tradePrice(prev);if(op) change24h=(np-op)/op*100;} }
+    const chartPts = chart.status==='fulfilled' ? (chart.value?.points??[]) : [];
+    const imageUrl = p.imageUrl || info?.primaryMedia?.imageUrl || '';
+    const chgCls=change24h!==null?pCls(change24h):'neu', chgTxt=change24h!==null?pStr(change24h):'–';
+    const tradeRows = psa10.length
+      ? `<div style="max-height:148px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
+          ${psa10.slice(0,20).map(t=>`
+          <div class="trade-row">
+            <span class="trade-time">${t.date??t.soldAt??''}</span>
+            <span class="trade-cond badge b-psa">${t.condition??'PSA10'}</span>
+            <span class="trade-price">${fmtTWD(toTWD(tradePrice(t)))}</span>
+          </div>`).join('')}
+        </div>`
+      : '<div class="no-data">無 PSA10 成交記錄</div>';
+    const sid = 'lp_'+p.id;
+    list.innerHTML = `
+      <button onclick="lpBack()" style="display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--acc);font-size:14px;font-weight:600;cursor:pointer;padding:0 2px 12px">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        返回結果
+      </button>
+      <div class="lp-card">
+        <div style="padding:10px 12px 0;display:flex;align-items:center;gap:6px">
+          <a href="https://snkrdunk.com/apparels/${p.id}" target="_blank" rel="noopener noreferrer"
+             style="font-size:13px;font-weight:700;line-height:1.3;flex:1;min-width:0;color:var(--text);text-decoration:none">${p.name}</a>
+          <span class="card-title-badge" style="flex-shrink:0">PSA10</span>
+        </div>
+        ${p.nameEn&&p.nameEn!==p.name?`<div style="padding:2px 12px 0;font-size:11px;color:var(--t2)">${p.nameEn}</div>`:''}
+        <div class="lp-card-top">
+          <div class="lp-img-box">
+            ${imageUrl?`<img src="${imageUrl}" alt="" onerror="this.style.display='none'">`:'<span style="font-size:28px">🃏</span>'}
+          </div>
+          <div class="lp-metrics">
+            <div class="lp-grid">
+              <span class="lp-lbl">PSA10 最新</span>
+              <span class="lp-val">${latestP?fmtTWD(latestP):'–'}</span>
+              <span class="lp-lbl">24h 成交</span>
+              <span class="lp-val">${recent.length>0?recent.length+'筆':'–'}</span>
+              <span class="lp-lbl">24h 漲跌</span>
+              <span class="lp-val ${chgCls}">${chgTxt}</span>
+            </div>
+            <button class="lp-add-btn" onclick="openAddFromLookup('${p.id}')">＋ 加入收藏</button>
+          </div>
+        </div>
+        ${packs.length?`
+        <div class="lp-trades-wrap">
+          <div class="lp-trades-hd">${packsTitle}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">
+            ${packs.map(pk=>{
+              const pkImg   = pk.primaryMedia?.imageUrl ?? '';
+              const pkName  = pk.localizedName ?? pk.name ?? '';
+              const pkNameEn= pk.name ?? '';
+              const pkId    = pk.id ?? '';
+              const pkPrice = pk.minPrice ?? null;
+              const pkDate  = pk.displayReleasedAt ?? '';
+              return `<a href="https://snkrdunk.com/apparels/${pkId}" target="_blank" rel="noopener noreferrer"
+                style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+                <div style="width:52px;height:52px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center">
+                  ${pkImg?`<img src="${pkImg}" style="width:100%;height:100%;object-fit:cover">`:'<span style="font-size:24px">📦</span>'}
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:12px;font-weight:600;line-height:1.3">${pkName}</div>
+                  ${pkNameEn&&pkNameEn!==pkName?`<div style="font-size:10px;color:var(--t2);margin-top:1px">${pkNameEn}</div>`:''}
+                  <div style="font-size:10px;color:var(--t2);margin-top:2px;display:flex;gap:6px">
+                    ${pkDate?`<span>${pkDate}</span>`:''}
+                    ${pkPrice?`<span style="font-weight:600;color:var(--text)">${fmtTWD(toTWD(pkPrice))}</span>`:''}
+                  </div>
+                </div>
+                <span style="font-size:11px;color:var(--acc);font-weight:600;white-space:nowrap;flex-shrink:0">查看 ›</span>
+              </a>`;
+            }).join('')}
+          </div>
+        </div>`:''}
+        <div class="lp-trades-wrap">
+          <div class="lp-trades-hd">近期成交（PSA10）</div>
+          ${tradeRows}
+        </div>
+        ${chartPts.length?`
+        <div class="lp-trades-wrap">
+          <div class="lp-trades-hd">PSA10 一個月走勢 <span style="font-size:9px;color:var(--t2);font-weight:400;letter-spacing:0">（紅虛線為平均成本水位）</span></div>
+          <div class="chart-wrap"><canvas id="${sid}" role="img" aria-label="價格走勢"></canvas></div>
+        </div>`:''}
+      </div>`;
+    if(chartPts.length){
+      const el=document.getElementById(sid); if(!el) return;
+      const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+      new Chart(el,{type:'line',data:{
+        labels:chartPts.map(([ts])=>{const d=new Date(ts);return(d.getMonth()+1)+'/'+(d.getDate());}),
+        datasets:[{data:chartPts.map(([,v])=>toTWD(v)),borderColor:'#534AB7',
+          backgroundColor:dark?'rgba(83,74,183,.12)':'rgba(83,74,183,.07)',
+          fill:false,tension:0,pointRadius:0,borderWidth:1.5}]
+      },options:{responsive:true,maintainAspectRatio:false,animation:false,
+        layout:{padding:{top:4,right:6,bottom:0,left:0}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtTWD(ctx.parsed.y)}}},
+        scales:{
+          x:{display:true,ticks:{color:'#8E8E93',font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:5},grid:{display:false,drawBorder:false}},
+          y:{display:true,grace:'10%',ticks:{color:'#8E8E93',font:{size:10},maxTicksLimit:4,callback:v=>'NT$'+Number(v).toLocaleString()},grid:{color:dark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)',drawBorder:false}}
+        }}});
+    }
+  }catch(e){
+    list.innerHTML += `<div class="lp-empty">載入失敗：${e.message}</div>`;
+  }
+}
+function lpRenderList(){
+  const list = document.getElementById('lpList');
+  list.innerHTML = `
+    <div style="font-size:11px;color:var(--t2);padding:0 2px 8px">找到 ${_lpSearchResults.length} 筆，點選查看詳細資訊</div>
+    <div class="search-result-list" style="max-height:none">
+      ${_lpSearchResults.map((p,i)=>`
+      <div class="search-result-item" onclick="showLPDetail(${i})">
+        <div class="search-result-thumb-wrap">
+          ${p.imageUrl
+            ?`<img class="search-result-thumb" src="${p.imageUrl}" alt="" onerror="this.style.display='none'">`
+            :`<span style="font-size:22px">🃏</span>`}
+        </div>
+        <div class="search-result-info">
+          <div class="search-result-name">${p.name}</div>
+          ${p.nameEn&&p.nameEn!==p.name?`<div class="search-result-sub">${p.nameEn}</div>`:''}
+        </div>
+        <svg class="search-chevron" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`).join('')}
+    </div>`;
+}
+function lpBack(){
+  if(_lpSearchResults.length) lpRenderList();
+  else document.getElementById('lpList').innerHTML='<div class="lp-empty" style="color:var(--t3);font-size:13px">輸入關鍵字開始查詢</div>';
+}
+function openAddFromLookup(id){
+  switchTab('collection');
+  setTimeout(()=>{
+    openAdd();
+    const inp=document.getElementById('urlInput');
+    if(inp){ inp.value=`https://snkrdunk.com/apparels/${id}`; inp.dispatchEvent(new Event('input')); }
+  }, 200);
 }
 /* ════════════════════════════════════════
    市場排行
